@@ -1,0 +1,11 @@
+folium>=0.15
+geopandas>=0.14
+highspy>=1.7
+matplotlib>=3.8
+numpy>=1.26
+pandas>=2.1
+plotly>=5.18
+pulp>=2.8
+scipy>=1.11
+shapely>=2.0
+

@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# Environments and local configuration
+.venv/
+venv/
+.env
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Generated results (retain the directory structure)
+outputs/figures/*
+!outputs/figures/.gitkeep
+outputs/results/*
+!outputs/results/.gitkeep
+
+# Archives and solver artifacts
+*.rar
+*.lp
+*.mps
+*.sol
+
