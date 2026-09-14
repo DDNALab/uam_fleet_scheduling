@@ -1,0 +1,678 @@
+"""
+stochastic_model.py
+
+Exact aircraft-indexed two-stage stochastic MILP formulation.
+
+Based on:
+Risk-Aware Charging and Service Commitment for Urban Air Mobility
+under Correlated Operational Uncertainty
+
+Stage 1:
+    n[d,t] : committed departures
+    b[t]   : reserved charging capacity
+
+Stage 2:
+    u[j,s]       : aircraft activation
+    x[j,t,s]     : aircraft charging start
+    z[j,d,k,s]   : aircraft departure assignment
+    F[j,s]       : aircraft departure time
+    Y[j,t,d,s]   : passenger eligibility
+    xi[j,t,d,s]  : passenger assignment
+    eta[t,d,s]   : unserved passengers
+    v_plus       : added departures
+    v_minus      : cancelled departures
+    b_plus       : emergency charging capacity
+"""
+
+import pulp
+import numpy as np
+
+
+# ============================================================
+# Helper functions
+# ============================================================
+
+def charging_periods_required(
+        soc,
+        params
+):
+    """
+    Calculate charging duration.
+    """
+
+    soc_min = params["soc_min"]
+
+    if soc >= soc_min:
+        return 0
+
+    energy_needed = (
+        params["battery_capacity"]
+        *
+        (soc_min - soc)
+        /
+        100
+    )
+
+    hours = (
+        energy_needed
+        /
+        params["charging_rate"]
+    )
+
+    periods = (
+        hours
+        *
+        60
+        /
+        params["bin_size"]
+    )
+
+    return int(np.ceil(periods))
+
+
+# ============================================================
+# Build model
+# ============================================================
+
+def build_stochastic_model(
+        model_input
+):
+
+    params = model_input["parameters"]
+
+    scenarios = model_input["scenarios"]
+
+
+    periods = range(
+        1,
+        params["periods"] + 1
+    )
+
+
+    destinations = sorted(
+        list({
+            d
+            for s in scenarios.values()
+            for (t,d)
+            in s["passenger_demand"].keys()
+        })
+    )
+
+
+    model = pulp.LpProblem(
+        "TwoStage_eVTOL_Stochastic_Scheduling",
+        pulp.LpMaximize
+    )
+
+
+    # ========================================================
+    # FIRST STAGE VARIABLES
+    # ========================================================
+
+    # n_dt : committed departures
+
+    n = {}
+
+    for d in destinations:
+
+        for t in periods:
+
+            n[d,t] = pulp.LpVariable(
+                f"Committed_Departure_{d}_{t}",
+                lowBound=0,
+                cat="Integer"
+            )
+
+
+    # b_t : reserved charging capacity
+
+    b = {}
+
+    for t in periods:
+
+        b[t] = pulp.LpVariable(
+            f"Reserved_Charging_{t}",
+            lowBound=0,
+            cat="Integer"
+        )
+
+
+    # ========================================================
+    # SECOND STAGE VARIABLES
+    # ========================================================
+
+    activation = {}
+    charging = {}
+    departures = {}
+    departure_time = {}
+
+    eligibility = {}
+    passengers = {}
+    unserved = {}
+
+    added_departures = {}
+    cancelled_departures = {}
+    emergency_capacity = {}
+
+
+    for sid, scenario in scenarios.items():
+
+
+        aircraft_ids = list(
+            scenario["aircraft"].keys()
+        )
+
+
+        # --------------------------------
+        # u_js
+        # --------------------------------
+
+        activation[sid] = pulp.LpVariable.dicts(
+            f"Activation_{sid}",
+            aircraft_ids,
+            lowBound=0,
+            upBound=1,
+            cat="Binary"
+        )
+
+
+        # --------------------------------
+        # x_jts
+        # --------------------------------
+
+        charging[sid] = pulp.LpVariable.dicts(
+            f"Charging_{sid}",
+            (
+                aircraft_ids,
+                periods
+            ),
+            lowBound=0,
+            upBound=1,
+            cat="Binary"
+        )
+
+
+        # --------------------------------
+        # z_jdks
+        # --------------------------------
+
+        departures[sid] = pulp.LpVariable.dicts(
+            f"Departure_{sid}",
+            (
+                aircraft_ids,
+                destinations,
+                periods
+            ),
+            lowBound=0,
+            upBound=1,
+            cat="Binary"
+        )
+
+
+        # --------------------------------
+        # F_js
+        # --------------------------------
+
+        departure_time[sid] = pulp.LpVariable.dicts(
+            f"DepartureTime_{sid}",
+            aircraft_ids,
+            lowBound=0,
+            cat="Continuous"
+        )
+
+
+        # --------------------------------
+        # Y_jtds
+        # --------------------------------
+
+        eligibility[sid] = pulp.LpVariable.dicts(
+            f"Eligibility_{sid}",
+            (
+                aircraft_ids,
+                periods,
+                destinations
+            ),
+            lowBound=0,
+            upBound=1,
+            cat="Binary"
+        )
+
+
+        # --------------------------------
+        # xi_jtds
+        # --------------------------------
+
+        passengers[sid] = pulp.LpVariable.dicts(
+            f"PassengerAssignment_{sid}",
+            (
+                aircraft_ids,
+                periods,
+                destinations
+            ),
+            lowBound=0,
+            cat="Continuous"
+        )
+
+
+        # --------------------------------
+        # eta_tds
+        # --------------------------------
+
+        unserved[sid] = pulp.LpVariable.dicts(
+            f"Unserved_{sid}",
+            (
+                periods,
+                destinations
+            ),
+            lowBound=0,
+            cat="Continuous"
+        )
+
+
+        # --------------------------------
+        # Recourse variables
+        # --------------------------------
+
+        added_departures[sid] = pulp.LpVariable.dicts(
+            f"AddedDeparture_{sid}",
+            (
+                destinations,
+                periods
+            ),
+            lowBound=0,
+            cat="Integer"
+        )
+
+
+        cancelled_departures[sid] = pulp.LpVariable.dicts(
+            f"CancelledDeparture_{sid}",
+            (
+                destinations,
+                periods
+            ),
+            lowBound=0,
+            cat="Integer"
+        )
+
+
+        emergency_capacity[sid] = pulp.LpVariable.dicts(
+            f"EmergencyCapacity_{sid}",
+            periods,
+            lowBound=0,
+            cat="Integer"
+        )
+
+
+    return {
+
+        "model": model,
+
+        "parameters": params,
+
+        "variables": {
+
+            "n": n,
+            "b": b,
+
+            "activation": activation,
+            "charging": charging,
+            "departures": departures,
+            "departure_time": departure_time,
+
+            "eligibility": eligibility,
+            "passengers": passengers,
+            "unserved": unserved,
+
+            "added_departures": added_departures,
+            "cancelled_departures": cancelled_departures,
+            "emergency_capacity": emergency_capacity
+
+        },
+
+        "destinations": destinations,
+
+        "periods": periods,
+
+        "scenarios": scenarios
+
+    }
+def add_constraints_and_objective(model_data):
+
+    model = model_data["model"]
+
+    vars = model_data["variables"]
+
+    params = model_data["parameters"]
+
+    scenarios = model_data["scenarios"]
+
+    destinations = model_data["destinations"]
+
+    periods = model_data["periods"]
+
+
+    n = vars["n"]
+    b = vars["b"]
+
+    activation = vars["activation"]
+    charging = vars["charging"]
+    departures = vars["departures"]
+    departure_time = vars["departure_time"]
+
+    eligibility = vars["eligibility"]
+    passengers = vars["passengers"]
+    unserved = vars["unserved"]
+
+    added_departures = vars["added_departures"]
+    cancelled_departures = vars["cancelled_departures"]
+    emergency_capacity = vars["emergency_capacity"]
+
+
+    # Big-M for waiting constraints later
+    M = len(periods) + 100
+
+
+    # ========================================================
+    # FIRST STAGE CONSTRAINTS
+    # ========================================================
+
+
+    # Eq. (3)
+    # Reserved charging capacity
+
+    for t in periods:
+
+        model += (
+            b[t]
+            <=
+            params["charging_facilities"]
+        ), f"Charging_reservation_limit_{t}"
+
+
+    # Eq. (4)
+    # Departure reservation capacity
+
+    for t in periods:
+
+        model += (
+            pulp.lpSum(
+                n[d,t]
+                for d in destinations
+            )
+            <=
+            params["max_departures"]
+        ), f"Departure_reservation_limit_{t}"
+
+
+
+    # ========================================================
+    # SCENARIO RECOURSE CONSTRAINTS
+    # ========================================================
+
+
+    for sid, scenario in scenarios.items():
+
+
+        aircraft = scenario["aircraft"]
+
+
+        # ====================================================
+        # CHARGING CONSTRAINTS
+        # PDF Eq. (5)-(7)
+        # ====================================================
+
+
+        for j, info in aircraft.items():
+
+
+            soc = info["initial_soc"]
+
+
+            charge_duration = charging_periods_required(
+                soc,
+                params
+            )
+
+
+            # --------------------------------------------
+            # Eq. (5)
+            #
+            # An activated aircraft charges exactly once
+            # --------------------------------------------
+
+            model += (
+
+                pulp.lpSum(
+                    charging[sid][j][t]
+                    for t in periods
+                )
+
+                ==
+
+                activation[sid][j]
+
+            ), f"Charging_assignment_{sid}_{j}"
+
+
+
+            # Aircraft cannot charge before arrival
+
+            arrival = info["arrival_period"]
+
+
+            for t in periods:
+
+                if t < arrival:
+
+                    model += (
+
+                        charging[sid][j][t]
+
+                        ==
+
+                        0
+
+                    ), f"No_charge_before_arrival_{sid}_{j}_{t}"
+
+
+
+        # --------------------------------------------
+        # Eq. (6)
+        #
+        # Charger occupancy
+        # --------------------------------------------
+
+
+        for t in periods:
+
+
+            active_charging = []
+
+
+            for j, info in aircraft.items():
+
+
+                duration = charging_periods_required(
+                    info["initial_soc"],
+                    params
+                )
+
+
+                for start in periods:
+
+
+                    if start <= t < start + duration:
+
+                        active_charging.append(
+                            charging[sid][j][start]
+                        )
+
+
+            model += (
+
+                pulp.lpSum(active_charging)
+
+                <=
+
+                b[t]
+
+                +
+
+                emergency_capacity[sid][t]
+
+            ), f"Charging_capacity_{sid}_{t}"
+
+
+
+        # --------------------------------------------
+        # Eq. (7)
+        #
+        # Emergency charger limit
+        # --------------------------------------------
+
+
+        for t in periods:
+
+            model += (
+
+                emergency_capacity[sid][t]
+
+                <=
+
+                params["charging_facilities"]
+
+                -
+
+                b[t]
+
+            ), f"Emergency_capacity_limit_{sid}_{t}"
+
+
+
+        # ====================================================
+        # AIRCRAFT OPERATION
+        # PDF Eq. (8)-(11)
+        # ====================================================
+
+
+        for j, info in aircraft.items():
+
+
+            # --------------------------------------------
+            # Eq. (8)
+            #
+            # Each active aircraft performs one flight
+            # --------------------------------------------
+
+
+            model += (
+
+                pulp.lpSum(
+
+                    departures[sid][j][d][k]
+
+                    for d in destinations
+
+                    for k in periods
+
+                )
+
+                ==
+
+                activation[sid][j]
+
+            ), f"Aircraft_one_flight_{sid}_{j}"
+
+
+
+            # --------------------------------------------
+            # Eq. (9)
+            #
+            # Departure time definition
+            # --------------------------------------------
+
+
+            model += (
+
+                departure_time[sid][j]
+
+                ==
+
+                pulp.lpSum(
+
+                    k *
+
+                    departures[sid][j][d][k]
+
+                    for d in destinations
+
+                    for k in periods
+
+                )
+
+            ), f"Departure_time_definition_{sid}_{j}"
+
+
+
+            # --------------------------------------------
+            # Eq. (10)
+            #
+            # Cannot depart before charging finishes
+            # --------------------------------------------
+
+
+            duration = charging_periods_required(
+                info["initial_soc"],
+                params
+            )
+
+
+            model += (
+
+                departure_time[sid][j]
+
+                >=
+
+                pulp.lpSum(
+
+                    (t + duration)
+
+                    *
+
+                    charging[sid][j][t]
+
+                    for t in periods
+
+                )
+
+            ), f"Charging_before_departure_{sid}_{j}"
+
+
+
+        # --------------------------------------------
+        # Eq. (11)
+        #
+        # Departure capacity
+        # --------------------------------------------
+
+
+        for t in periods:
+
+
+            model += (
+
+                pulp.lpSum(
+
+                    departures[sid][j][d][t]
+
+                    for j in aircraft
+
+                    for d in destinations
+
+                )
+
+                <=
+
+                params["max_departures"]
+
+            ), f"Hub_departure_capacity_{sid}_{t}"

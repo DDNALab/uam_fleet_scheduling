@@ -1,201 +1,443 @@
-"""Run the complete data, scenario, optimization, and reporting workflow."""
+"""
+Run complete UAM stochastic optimization workflow.
+
+Pipeline:
+
+1. Data preparation
+2. Scenario generation
+3. Scenario reduction
+4. Model input construction
+5. Two-stage stochastic MILP
+6. Reporting
+"""
+
 
 import argparse
 import json
 from pathlib import Path
 import sys
 
-# Support both recommended package execution and IDE "Run Python File" actions.
-# When this file is launched directly, Python does not assign it a package, so
-# relative imports such as ``from .config`` would otherwise fail.
-if __package__ in {None, ""}:
-    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-    __package__ = "coord_schedule_uam"
-
 import numpy as np
 
-from .config import (
-    N_SCENARIOS,
-    RESULTS_DIR,
-    SEED,
-    SHAPEFILE_PATH,
-    TARGET_SCENARIOS,
-    TRIPS_BY_DEST,
-)
-from .data_loading import load_all_data
-from .demand_model import build_demand_model
-from .model_construction import (
-    build_stochastic_model_input,
-    conditional_soc_sampling_per_evtol,
-)
-from .scenario_generation import (
-    build_bin_destination_pmfs,
-    generate_joint_demand_scenarios,
-)
-from .scenario_reduction import scenario_reduction_backward_with_evtol_filter
-from .solution_algorithm import build_and_solve_stochastic_model_aggregated
-from .visualization import plot_reduced_scenario_analysis, plot_scenario_arrivals
 
-def run_experiment(seed=SEED, create_plots=True, solve=True):
+# Support direct execution
+if __package__ in {None, ""}:
+
+    sys.path.insert(
+        0,
+        str(Path(__file__).resolve().parents[1])
+    )
+
+    __package__ = "coord_schedule_uam"
+
+
+
+from .config import (
+    RANDOM_SEED,
+    RESULTS_DIR,
+    RAW_SCENARIOS,
+    OPTIMIZATION_SCENARIOS
+)
+
+
+from .uam_data_pipeline import (
+    build_uam_data
+)
+
+
+from .scenario_generator import (
+    generate_scenarios
+)
+
+
+from .scenario_reduction import (
+    reduce_scenarios
+)
+
+
+from .model_builder import (
+    build_model_input
+)
+
+
+from .stochastic_model import (
+    build_stochastic_model,
+    add_constraints_and_objective,
+    solve_model
+)
+
+from .solution_export import (
+    print_solution_report
+)
+
+
+
+
+# ============================================================
+# Main workflow
+# ============================================================
+
+
+def run_experiment(
+        seed=RANDOM_SEED,
+        solve=True,
+        solver="auto"
+):
+
+
     np.random.seed(seed)
 
-    # 1. DATA LOADING
-    print("\n[1] Loading data...")
-    data = load_all_data(SHAPEFILE_PATH)
-    verts, uam_by_vert = data["vertiports"], data["uam_by_vertiport"]
 
-    # 2. DEMAND MODEL
-    print("\n[2] Building demand model...")
-    demand = build_demand_model(verts, uam_by_vert, vertiports=data["vertiports_dict"])
-    print(demand["flows"][["origin", "destination", "distance_km", "trips"]].to_string(index=False))
-    print(f"\nTotal Trips: {demand['total_trips']:.2f} | CBD Boost: {demand['cbd_boost']:.2f}x")
 
-    # 3. SCENARIO GENERATION
-    print("\n[3] Generating scenarios...")
-    passenger_arrivals = demand["passenger_arrivals"]
-    evtol_arrivals     = demand["evtol_arrivals"]
-    passenger_dest     = demand["passenger_dest_names"]
+    # --------------------------------------------------------
+    # 1. DATA PIPELINE
+    # --------------------------------------------------------
 
-    bin_pmfs, _ = build_bin_destination_pmfs(
-        passenger_arrivals=passenger_arrivals,
-        passenger_dest=passenger_dest,
-        target_shares=TRIPS_BY_DEST
+    print("\n[1] Building UAM data pipeline...")
+
+
+    data = build_uam_data()
+
+
+
+    print("\nExpected OD demand:")
+
+    print(
+        data["od_demand"]
+        .to_string(index=False)
     )
 
-    destination_data = {
-        row["destination"]: {
-            "fare":     round(20 + 3 * row["distance_km"] * 0.621371, 2),
-            "distance": row["distance_km"] * 0.621371
-        }
-        for _, row in demand["flows"].iterrows()
+
+
+    # --------------------------------------------------------
+    # 2. SCENARIO GENERATION
+    # --------------------------------------------------------
+
+    print("\n[2] Generating scenarios...")
+
+
+    expected_demand = {
+
+        row["destination"]:
+        row["expected_trips"]
+
+        for _, row
+        in data["od_demand"].iterrows()
+
     }
 
-    scenarios = generate_joint_demand_scenarios(
-        passenger_arrivals=passenger_arrivals,
-        evtol_arrivals=evtol_arrivals,
-        destination_data=destination_data,
-        bin_pmfs=bin_pmfs,
-        n_scenarios=N_SCENARIOS
+
+
+    time_profile = (
+
+        data["time_profile"]
+        ["weight"]
+        .values
+
     )
 
-    print(f"Generated {len(scenarios)} scenarios")
+
+
+    scenarios = generate_scenarios(
+
+        expected_demand,
+
+        time_profile,
+
+        n_scenarios=RAW_SCENARIOS,
+
+        seed=seed
+
+    )
+
+
+
+    print(
+        f"Generated scenarios: {len(scenarios)}"
+    )
+
+
+
     for s in scenarios[:3]:
-        top_dest = max(s['destination_counts'], key=s['destination_counts'].get) if s['destination_counts'] else "N/A"
-        print(f"  S{s['id']} | passengers={s['total_passengers']} | evtols={s['total_evtols']} | top dest={top_dest}")
 
-    # 4. SCENARIO REDUCTION
-    print("\n[4] Reducing scenarios...")
-    reduced = scenario_reduction_backward_with_evtol_filter(
-        scenarios,
-        target_size=TARGET_SCENARIOS,
-        plot=False,
-    )
-
-    print(f"Reduced to {len(reduced)} scenarios:")
-    for s in reduced:
-        print(f"  S{s['id']} | prob={s['probability']:.3f} | passengers={s['total_passengers']} | evtols={s['total_evtols']}")
-
-    # 5. SOC SAMPLING
-    print("\n[5] Conditional SoC sampling...")
-    reduced = conditional_soc_sampling_per_evtol(reduced, assignment_case=1, plot=False)
-
-    for s in reduced:
-        avg_soc = np.mean(list(s["evtol_socs"].values())) if s["evtol_socs"] else 0
-        print(f"  S{s['id']} | avg_soc={avg_soc:.1f}% | load_ratio={s['avg_load_ratio']:.2f}")
-
-    # 6. MODEL CONSTRUCTION
-    print("\n[6] Building stochastic model input...")
-
-    dest_names = list(destination_data.keys())
-    destination_mapping = {
-        "id_to_name": {i: n for i, n in enumerate(dest_names)},
-        "name_to_id": {n: i for i, n in enumerate(dest_names)}
-    }
-    destination_fares = {i: destination_data[n]["fare"] for i, n in enumerate(dest_names)}
-
-    stochastic_input = build_stochastic_model_input(
-        reduced_scenarios=reduced,
-        bin_pmfs=bin_pmfs,
-        destination_fares=destination_fares,
-        destination_mapping=destination_mapping,
-        verbose=True
-    )
-
-    for sid, s in stochastic_input["scenarios"].items():
-        print(f"  S{sid} | prob={s['probability']:.3f} | evtols={s['n_evtols']} | passengers={s['w_passengers']}")
-
-    # 7. OPTIMIZATION
-    if solve:
-        print("\n[7] Solving optimization model...")
-        model, results = build_and_solve_stochastic_model_aggregated(
-            stochastic_input,
-            verbose=True,
-        )
-        print(f"  Status    : {results['status']}")
-        objective = results["objective"]
         print(
-            f"  Objective : {objective:.4f}"
-            if objective is not None
-            else "  Objective : unavailable"
+            f"""
+Scenario {s.id}
+
+Passengers:
+{sum(s.passenger_demand.values())}
+
+Aircraft:
+{len(s.aircraft)}
+"""
         )
-    else:
-        print("\n[7] Optimization skipped.")
-        model = None
-        objective = None
-        results = {"status": "Skipped", "status_code": None, "objective": None}
 
-    # 8. VISUALIZATION
-    if create_plots:
-        print("\n[8] Visualization...")
-        plot_scenario_arrivals(reduced)
-        plot_reduced_scenario_analysis(reduced, scenarios)
 
-    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-    summary = {
-        "seed": seed,
-        "generated_scenarios": len(scenarios),
-        "reduced_scenarios": len(reduced),
-        "solver_status": results["status"],
-        "objective": objective,
-    }
-    (RESULTS_DIR / "run_summary.json").write_text(
-        json.dumps(summary, indent=2),
-        encoding="utf-8",
+
+    # --------------------------------------------------------
+    # 3. SCENARIO REDUCTION
+    # --------------------------------------------------------
+
+    print("\n[3] Scenario reduction...")
+
+
+    reduced = reduce_scenarios(
+
+        scenarios,
+
+        target_size=OPTIMIZATION_SCENARIOS
+
     )
 
 
-    print("\n====== DONE ======")
-    return {
-        "data": data,
-        "demand": demand,
-        "scenarios": scenarios,
-        "reduced": reduced,
-        "stochastic_input": stochastic_input,
-        "model": model,
-        "results": results
+    print(
+        f"Reduced scenarios: {len(reduced)}"
+    )
+
+
+    for s in reduced:
+
+        print(
+            f"S{s.id} "
+            f"prob={s.probability:.3f} "
+            f"aircraft={len(s.aircraft)}"
+        )
+
+
+
+    # --------------------------------------------------------
+    # 4. MODEL INPUT
+    # --------------------------------------------------------
+
+    print("\n[4] Building optimization input...")
+
+
+    model_input = build_model_input(
+
+        reduced
+
+    )
+
+
+
+    print(
+        "Model input created"
+    )
+
+
+
+    # --------------------------------------------------------
+    # 5. STOCHASTIC MILP
+    # --------------------------------------------------------
+
+    if solve:
+
+
+        print(
+            "\n[5] Building stochastic MILP..."
+        )
+
+
+        model_data = build_stochastic_model(
+
+            model_input
+
+        )
+
+
+        model = add_constraints_and_objective(
+
+            model_data
+
+        )
+
+
+        print(
+            "\n[6] Solving..."
+        )
+
+
+        results = solve_model(
+
+            model,
+
+            solver=solver
+
+        )
+
+
+        print(
+            "\nRESULT"
+        )
+
+        print(
+            results
+        )
+
+
+        # ------------------------------------------------
+        # Objective breakdown + passenger service, on screen
+        # ------------------------------------------------
+
+        print_solution_report(
+
+            model_data,
+
+            objective=results.get("objective"),
+
+            solver=results.get("solver"),
+
+            status=results.get("status")
+
+        )
+
+
+
+    else:
+
+        print(
+            "\nOptimization skipped"
+        )
+
+        results={
+
+            "status":
+            "Skipped",
+
+            "objective":
+            None
+
+        }
+
+
+
+    # --------------------------------------------------------
+    # 6. SAVE REPORT
+    # --------------------------------------------------------
+
+    RESULTS_DIR.mkdir(
+
+        parents=True,
+
+        exist_ok=True
+
+    )
+
+
+    summary={
+
+        "seed":
+        seed,
+
+        "generated_scenarios":
+        len(scenarios),
+
+        "reduced_scenarios":
+        len(reduced),
+
+        "status":
+        results["status"],
+
+        "objective":
+        results["objective"]
+
     }
+
+
+    (
+        RESULTS_DIR /
+        "run_summary.json"
+
+    ).write_text(
+
+        json.dumps(
+            summary,
+            indent=2
+        ),
+
+        encoding="utf-8"
+
+    )
+
+
+    print(
+        "\n====== DONE ======"
+    )
+
+
+
+    return {
+
+        "data":
+        data,
+
+        "scenarios":
+        scenarios,
+
+        "reduced":
+        reduced,
+
+        "model_input":
+        model_input,
+
+        "results":
+        results
+
+    }
+
+
+
+
+# ============================================================
+# CLI
+# ============================================================
 
 
 def main():
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--seed", type=int, default=SEED)
+
+    parser = argparse.ArgumentParser()
+
+
     parser.add_argument(
-        "--no-plots",
-        action="store_true",
-        help="Run the workflow without generating interactive HTML plots.",
+        "--seed",
+        type=int,
+        default=RANDOM_SEED
     )
+
+
     parser.add_argument(
         "--skip-solve",
-        action="store_true",
-        help="Build solver inputs but skip the computationally expensive MILP solve.",
+        action="store_true"
     )
+
+
+    parser.add_argument(
+        "--solver",
+        default="auto",
+        choices=["auto", "gurobi", "highs", "cbc"],
+        help=(
+            "MILP solver. 'auto' (default) prefers Gurobi, then HiGHS, "
+            "then CBC, skipping any solver that cannot hold the model."
+        )
+    )
+
+
     args = parser.parse_args()
+
+
+
     run_experiment(
+
         seed=args.seed,
-        create_plots=not args.no_plots,
+
         solve=not args.skip_solve,
+
+        solver=args.solver
+
     )
+
 
 
 if __name__ == "__main__":
+
     main()

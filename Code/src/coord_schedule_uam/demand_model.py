@@ -260,7 +260,9 @@ def build_scenario_data(flows_df, vertiports):
     evtol_arrivals = sample_arrival_times(N_EVTOL, BINS, BIN_MID, pdf_evtol)
 
     return {
+        "destinations":             DESTINATION_DATA,
         "passenger_arrivals":       passenger_arrivals,
+        "passenger_destinations":   passenger_dest_names,
         "passenger_dest_names":     passenger_dest_names,
         "passenger_dest_distances": passenger_dest_distances,
         "passenger_dest_fares":     passenger_dest_fares,

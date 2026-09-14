@@ -2,6 +2,6 @@
   "seed": 60,
   "generated_scenarios": 30,
   "reduced_scenarios": 3,
-  "solver_status": "Optimal",
-  "objective": -787.2457291666668
+  "status": "Optimal",
+  "objective": 533.1213196375602
 }

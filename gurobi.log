@@ -1,0 +1,13 @@
+
+Gurobi 11.0.3 (win64, gurobi_cl) logging started Sun Sep 13 20:10:21 2026
+
+Set parameter Username
+Set parameter LicenseID to value 2760641
+Set parameter TimeLimit to value 600
+Set parameter MIPGap to value 0.02
+Set parameter MIPFocus to value 1
+Set parameter Cuts to value 2
+Set parameter LogFile to value "gurobi.log"
+Set parameter Presolve to value 2
+Set parameter Threads to value 8
+Using license file C:\Users\novin\gurobi.lic
