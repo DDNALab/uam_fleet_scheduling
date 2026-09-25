@@ -60,9 +60,9 @@ from .model_builder import (
 )
 
 
+# solve_model is formulation-independent: both models are ordinary PuLP
+# problems. The build/add functions are imported per-run by get_formulation.
 from .stochastic_model import (
-    build_stochastic_model,
-    add_constraints_and_objective,
     solve_model
 )
 
@@ -78,10 +78,56 @@ from .solution_export import (
 # ============================================================
 
 
+# ============================================================
+# Formulation selection
+# ============================================================
+
+# Two equivalent formulations of the same two-stage stochastic program:
+#
+#   "indexed"    -- aircraft-indexed, stochastic_model.py (PDF Section 4.2)
+#   "aggregated" -- duration-aggregated cumulative flow, aggregated_model.py
+#                   (PDF Section 4.3), the exact projected reformulation
+#
+# Both expose build_*_model(model_input) and add_constraints_and_objective
+# (model_data), so they are interchangeable here.
+FORMULATIONS = ("indexed", "aggregated")
+
+DEFAULT_FORMULATION = "indexed"
+
+
+def get_formulation(name):
+
+    name = (name or DEFAULT_FORMULATION).lower()
+
+    if name not in FORMULATIONS:
+
+        raise ValueError(
+            "Unknown formulation %r. Choose one of: %s"
+            % (name, ", ".join(FORMULATIONS))
+        )
+
+    if name == "aggregated":
+
+        from .aggregated_model import (
+            build_aggregated_model as build,
+            add_constraints_and_objective as add,
+        )
+
+    else:
+
+        from .stochastic_model import (
+            build_stochastic_model as build,
+            add_constraints_and_objective as add,
+        )
+
+    return name, build, add
+
+
 def run_experiment(
         seed=RANDOM_SEED,
         solve=True,
-        solver="auto"
+        solver="auto",
+        formulation=DEFAULT_FORMULATION
 ):
 
 
@@ -233,22 +279,48 @@ Aircraft:
     if solve:
 
 
+        formulation_name, build_model, add_constraints = get_formulation(
+            formulation
+        )
+
+        if formulation_name == "aggregated":
+
+            print(
+                "\n[info] Using the duration-aggregated cumulative-flow "
+                "reformulation. This is a new implementation; verify its "
+                "objective against --formulation indexed before using it for "
+                "publication results."
+            )
+
         print(
-            "\n[5] Building stochastic MILP..."
+            "\n[5] Building stochastic MILP "
+            "(formulation: %s)..." % formulation_name
         )
 
 
-        model_data = build_stochastic_model(
+        model_data = build_model(
 
             model_input
 
         )
 
 
-        model = add_constraints_and_objective(
+        model = add_constraints(
 
             model_data
 
+        )
+
+
+        print(
+            "    variables=%d constraints=%d"
+            % (
+                len(model.variables()),
+                sum(
+                    len(c) if isinstance(c, list) else 1
+                    for c in model.constraints.values()
+                )
+            )
         )
 
 
@@ -422,6 +494,22 @@ def main():
     )
 
 
+    parser.add_argument(
+        "--formulation",
+        default=DEFAULT_FORMULATION,
+        choices=list(FORMULATIONS),
+        help=(
+            "Model formulation. 'indexed' (default) is the aircraft-indexed "
+            "model of PDF Section 4.2; 'aggregated' is the "
+            "duration-aggregated cumulative-flow reformulation of Section 4.3, "
+            "which is much smaller. The reformulation is exact under the "
+            "paper's pooling assumptions, but its implementation here is new "
+            "and should be cross-checked against the indexed model before "
+            "being used for publication results."
+        )
+    )
+
+
     args = parser.parse_args()
 
 
@@ -432,7 +520,9 @@ def main():
 
         solve=not args.skip_solve,
 
-        solver=args.solver
+        solver=args.solver,
+
+        formulation=args.formulation
 
     )
 

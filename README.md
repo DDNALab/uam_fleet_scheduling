@@ -33,7 +33,8 @@ flowchart LR
 | Scenario generation | `scenario_generator.py` |
 | Scenario reduction | `scenario_reduction.py` |
 | Solver-ready structures | `model_builder.py` |
-| Two-stage MILP, CVaR, solver selection | `stochastic_model.py` |
+| Aircraft-indexed MILP (PDF §4.2) | `stochastic_model.py` |
+| Aggregated MILP (PDF §4.3) | `aggregated_model.py` |
 | Objective breakdown, variable dump | `solution_export.py` |
 | Figures | `visualization.py` |
 | Orchestration | `experiment_runner.py` |
@@ -66,6 +67,7 @@ coord-schedule-uam/
     │   ├── scenario_reduction.py    # Backward reduction
     │   ├── model_builder.py         # Solver-ready scenario structures
     │   ├── stochastic_model.py      # Two-stage MILP, CVaR, solver selection
+    │   ├── aggregated_model.py      # Duration-aggregated cumulative-flow reformulation
     │   ├── solution_export.py       # Objective breakdown and variable dump
     │   ├── visualization.py         # Plotly and Folium outputs
     │   └── experiment_runner.py     # End-to-end orchestration
@@ -155,10 +157,26 @@ Full option list:
 --seed SEED
 --skip-solve
 --solver {auto,gurobi,highs,cbc}
+--formulation {indexed,aggregated}
 ```
 
 Do not launch files inside `src/coord_schedule_uam/` directly. They are package
 modules and use relative imports such as `from .config import ...`.
+
+### Switching formulations
+
+The default model is the aircraft-indexed formulation (`--formulation indexed`,
+PDF Section 4.2). To use the smaller duration-aggregated cumulative-flow
+reformulation (`--formulation aggregated`, PDF Section 4.3):
+
+```bash
+python run_experiment.py --formulation aggregated --solver highs
+```
+
+The aggregated model is exact under the paper's pooling assumptions, but its
+implementation is new. On the same instance it currently gives a different
+objective than the indexed model, so treat it as experimental until the two are
+cross-validated.
 
 ### After installing the package
 

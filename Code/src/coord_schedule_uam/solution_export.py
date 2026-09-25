@@ -66,6 +66,128 @@ def _energy_needed(info, params):
 
 
 # ------------------------------------------------------------
+# formulation-aware accessors
+#
+# The indexed model (stochastic_model.py) and the aggregated model
+# (aggregated_model.py) store the same economic quantities under different
+# variable families. These adapters expose one interface to both, so every
+# reporting function below stays formulation-agnostic.
+# ------------------------------------------------------------
+
+def _formulation(model_data):
+    return model_data.get("formulation", "indexed")
+
+
+def _served(sid, model_data, params, durations=None):
+    """
+    Passenger-equivalent flow per destination, for revenue and service totals.
+
+    Returns a dict destination -> served passengers.
+    """
+
+    vars_ = model_data["variables"]
+    destinations = model_data["destinations"]
+    periods = list(model_data["periods"])
+
+    out = {d: 0.0 for d in destinations}
+
+    if _formulation(model_data) == "aggregated":
+
+        for (r, d, k) in vars_["passengers"][sid]:
+            out[d] += _val(vars_["passengers"][sid][r, d, k])
+
+        return out
+
+    aircraft = model_data["scenarios"][sid]["aircraft"]
+
+    for j in aircraft:
+        for t in periods:
+            for d in destinations:
+                out[d] += _val(vars_["passengers"][sid][j][t][d])
+
+    return out
+
+
+def _charging_cost(sid, model_data, params):
+    """Energy cost of charging, priced at the time-of-use rate."""
+
+    vars_ = model_data["variables"]
+    periods = list(model_data["periods"])
+
+    def price_at(t):
+        return energy_price_per_kwh(
+            (params["horizon"]["start"]
+             + (t - 1) * params["bin_size"]) / 60.0,
+            params,
+        )
+
+    if _formulation(model_data) == "aggregated":
+
+        groups = vars_["groups"][sid]
+
+        total = 0.0
+        for (g, t) in vars_["rho"][sid]:
+            total += _val(vars_["rho"][sid][g, t]) * groups[g]["energy"] * price_at(t)
+
+        return total
+
+    aircraft = model_data["scenarios"][sid]["aircraft"]
+
+    total = 0.0
+    for j, info in aircraft.items():
+        energy = _energy_needed(info, params)
+        for t in periods:
+            if _val(vars_["charging"][sid][j][t]) > 0.5:
+                total += energy * price_at(t)
+
+    return total
+
+
+def _unserved(sid, model_data):
+    """Total unserved passengers in a scenario."""
+
+    vars_ = model_data["variables"]
+    destinations = model_data["destinations"]
+    periods = list(model_data["periods"])
+
+    if _formulation(model_data) == "aggregated":
+        return sum(
+            _val(vars_["unserved"][sid][r, d])
+            for (r, d) in vars_["unserved"][sid]
+        )
+
+    return sum(
+        _val(vars_["unserved"][sid][t][d])
+        for t in periods
+        for d in destinations
+    )
+
+
+def _activated_aircraft(sid, model_data):
+    """
+    Number of activated aircraft.
+
+    The aggregated model projects aircraft identities out, so the closest
+    equivalent is the number of aircraft that start charging.
+    """
+
+    vars_ = model_data["variables"]
+
+    if _formulation(model_data) == "aggregated":
+
+        # Every charged aircraft completes and departs exactly once (Eq. 29),
+        # so total completions over the horizon is the activated count.
+        return sum(
+            _val(vars_["completions"][sid][k])
+            for k in list(model_data["periods"])
+        )
+
+    aircraft = model_data["scenarios"][sid]["aircraft"]
+
+    return sum(_val(vars_["activation"][sid][j]) for j in aircraft)
+
+
+# ------------------------------------------------------------
 # objective decomposition
 # ------------------------------------------------------------
 
@@ -98,32 +220,18 @@ def objective_breakdown(model_data):
 
     for sid, scenario in scenarios.items():
         prob = scenario["probability"]
-        aircraft = scenario["aircraft"]
+
+        by_destination = _served(sid, model_data, params)
 
         revenue = sum(
-            _val(vars_["passengers"][sid][j][t][d]) * fares.get(d, 0.0)
-            for j in aircraft
-            for t in periods
-            for d in destinations
+            by_destination[d] * fares.get(d, 0.0) for d in destinations
         )
 
-        charging = 0.0
-        for j, info in aircraft.items():
-            energy = _energy_needed(info, params)
-            for t in periods:
-                if _val(vars_["charging"][sid][j][t]) > 0.5:
-                    price = energy_price_per_kwh(
-                        (params["horizon"]["start"]
-                         + (t - 1) * params["bin_size"]) / 60.0,
-                        params,
-                    )
-                    charging += energy * price
+        served = sum(by_destination.values())
 
-        unserved = sum(
-            _val(vars_["unserved"][sid][t][d])
-            for t in periods
-            for d in destinations
-        )
+        charging = _charging_cost(sid, model_data, params)
+
+        unserved = _unserved(sid, model_data)
 
         added = sum(
             _val(vars_["added_departures"][sid][d][t])
@@ -140,15 +248,9 @@ def objective_breakdown(model_data):
             for t in periods
         )
 
-        activated = sum(_val(vars_["activation"][sid][j]) for j in aircraft)
+        activated = _activated_aircraft(sid, model_data)
 
         demand = sum(scenario["passenger_demand"].values())
-        served = sum(
-            _val(vars_["passengers"][sid][j][t][d])
-            for j in aircraft
-            for t in periods
-            for d in destinations
-        )
 
         profit = (
             revenue
@@ -171,7 +273,7 @@ def objective_breakdown(model_data):
         rows.append({
             "scenario": sid,
             "probability": round(prob, 6),
-            "n_aircraft": len(aircraft),
+            "n_aircraft": len(scenario["aircraft"]),
             "n_activated": int(round(activated)),
             "demand": demand,
             "served": round(served, 4),
@@ -207,11 +309,7 @@ def cvar_summary(model_data):
 
     losses = {}
     for sid in scenarios:
-        unserved = sum(
-            _val(vars_["unserved"][sid][t][d])
-            for t in periods
-            for d in destinations
-        )
+        unserved = _unserved(sid, model_data)
         cancelled = sum(
             _val(vars_["cancelled_departures"][sid][d][t])
             for d in destinations
@@ -287,93 +385,192 @@ def export_solution(model_data, out_dir="outputs/results/solution_dump"):
         ["period", "b_reserved"], rows)
 
     # ---- scenario-level variable families -------------------
-    charge_rows, flight_rows, pax_rows = [], [], []
+    flight_rows, pax_rows = [], []
     unserved_rows, adj_rows, emg_rows = [], [], []
-    act_rows, time_rows, elig_rows = [], [], []
 
-    for sid, scenario in scenarios.items():
-        aircraft = scenario["aircraft"]
+    aggregated = _formulation(model_data) == "aggregated"
 
-        for j, info in aircraft.items():
-            act_rows.append([
-                sid, j, info["arrival_period"], round(info["initial_soc"], 4),
-                _val(vars_["activation"][sid][j]),
-                _val(vars_["departure_time"][sid][j]),
-                round(_energy_needed(info, params), 4),
-            ])
-            for t in periods:
-                v = _val(vars_["charging"][sid][j][t])
+    if aggregated:
+
+        # The aggregated model has no aircraft identities: report group
+        # charging, duration-start totals and the cumulative flows instead.
+        group_rows, w_rows = [], []
+        flow_rows, comp_rows = [], []
+
+        for sid, scenario in scenarios.items():
+
+            groups = vars_["groups"][sid]
+
+            for (g, t) in vars_["rho"][sid]:
+                v = _val(vars_["rho"][sid][g, t])
                 if v:
-                    charge_rows.append([sid, j, t, v])
+                    group_rows.append([
+                        sid, g[0], g[1], round(g[2], 4), t, v
+                    ])
 
-        for j in aircraft:
+            for (h, t), var in vars_["w"][sid].items():
+                v = _val(var)
+                if v:
+                    w_rows.append([sid, h, t, v])
+
+            for k in periods:
+                c = _val(vars_["completions"][sid][k])
+                d_ = _val(vars_["departures_total"][sid][k])
+                if c or d_:
+                    flow_rows.append([sid, k, c, d_])
+
+            for d in destinations:
+                for k in periods:
+                    f = _val(vars_["flights"][sid][d, k])
+                    if f:
+                        flight_rows.append([sid, d, k, f])
+
+            for (r, d, k) in vars_["passengers"][sid]:
+                p = _val(vars_["passengers"][sid][r, d, k])
+                if p:
+                    pax_rows.append([sid, r, d, k, p])
+
+            for (r, d) in vars_["unserved"][sid]:
+                u = _val(vars_["unserved"][sid][r, d])
+                if u:
+                    unserved_rows.append([sid, r, d, u])
+
             for d in destinations:
                 for t in periods:
-                    z = _val(vars_["departures"][sid][j][d][t])
-                    if z:
-                        flight_rows.append([sid, j, d, t, z])
-                    y = _val(vars_["eligibility"][sid][j][t][d])
-                    if y:
-                        elig_rows.append([sid, j, t, d, y])
-                    p = _val(vars_["passengers"][sid][j][t][d])
-                    if p:
-                        pax_rows.append([sid, j, t, d, p])
+                    ap = _val(vars_["added_departures"][sid][d][t])
+                    cp = _val(vars_["cancelled_departures"][sid][d][t])
+                    if ap or cp:
+                        adj_rows.append([sid, d, t, ap, cp])
 
-        for t in periods:
-            for d in destinations:
-                u = _val(vars_["unserved"][sid][t][d])
-                if u:
-                    unserved_rows.append([sid, t, d, u])
-
-        for d in destinations:
             for t in periods:
-                ap = _val(vars_["added_departures"][sid][d][t])
-                cp = _val(vars_["cancelled_departures"][sid][d][t])
-                if ap or cp:
-                    adj_rows.append([sid, d, t, ap, cp])
+                e = _val(vars_["emergency_capacity"][sid][t])
+                if e:
+                    emg_rows.append([sid, t, e])
 
-        for t in periods:
-            e = _val(vars_["emergency_capacity"][sid][t])
-            if e:
-                emg_rows.append([sid, t, e])
+        written["group_charging"] = _write_csv(
+            out / "group_charging.csv",
+            ["scenario", "arrival_period", "duration", "energy_kwh",
+             "start_period", "rho_assigned"], group_rows)
 
-    written["activation"] = _write_csv(
-        out / "activation.csv",
-        ["scenario", "aircraft", "arrival_period", "initial_soc",
-         "u_activated", "F_departure_time", "energy_needed_kwh"], act_rows)
+        written["duration_starts"] = _write_csv(
+            out / "duration_starts.csv",
+            ["scenario", "duration", "start_period", "w_operations"], w_rows)
 
-    written["charging"] = _write_csv(
-        out / "charging.csv",
-        ["scenario", "aircraft", "period", "x_charge_start"], charge_rows)
+        written["cumulative_flow"] = _write_csv(
+            out / "cumulative_flow.csv",
+            ["scenario", "period", "C_completions", "D_departures"], flow_rows)
 
-    written["departures"] = _write_csv(
-        out / "departures.csv",
-        ["scenario", "aircraft", "destination", "period", "z_departure"],
-        flight_rows)
+        written["flights"] = _write_csv(
+            out / "flights.csv",
+            ["scenario", "destination", "period", "f_realized"], flight_rows)
 
-    written["eligibility"] = _write_csv(
-        out / "eligibility.csv",
-        ["scenario", "aircraft", "period", "destination", "Y_eligible"],
-        elig_rows)
+        written["passengers"] = _write_csv(
+            out / "passengers.csv",
+            ["scenario", "arrival_period", "destination", "departure_period",
+             "y_served"], pax_rows)
 
-    written["passengers"] = _write_csv(
-        out / "passengers.csv",
-        ["scenario", "aircraft", "period", "destination", "xi_assigned"],
-        pax_rows)
+        written["unserved"] = _write_csv(
+            out / "unserved.csv",
+            ["scenario", "arrival_period", "destination", "phi_unserved"],
+            unserved_rows)
 
-    written["unserved"] = _write_csv(
-        out / "unserved.csv",
-        ["scenario", "period", "destination", "phi_unserved"],
-        unserved_rows)
+        written["adjustments"] = _write_csv(
+            out / "adjustments.csv",
+            ["scenario", "destination", "period", "v_plus_added",
+             "v_minus_cancelled"], adj_rows)
 
-    written["adjustments"] = _write_csv(
-        out / "adjustments.csv",
-        ["scenario", "destination", "period", "v_plus_added",
-         "v_minus_cancelled"], adj_rows)
+        written["emergency_capacity"] = _write_csv(
+            out / "emergency_capacity.csv",
+            ["scenario", "period", "b_plus_emergency"], emg_rows)
 
-    written["emergency_capacity"] = _write_csv(
-        out / "emergency_capacity.csv",
-        ["scenario", "period", "b_plus_emergency"], emg_rows)
+    else:
+
+        charge_rows, act_rows, elig_rows = [], [], []
+
+        for sid, scenario in scenarios.items():
+            aircraft = scenario["aircraft"]
+
+            for j, info in aircraft.items():
+                act_rows.append([
+                    sid, j, info["arrival_period"],
+                    round(info["initial_soc"], 4),
+                    _val(vars_["activation"][sid][j]),
+                    _val(vars_["departure_time"][sid][j]),
+                    round(_energy_needed(info, params), 4),
+                ])
+                for t in periods:
+                    v = _val(vars_["charging"][sid][j][t])
+                    if v:
+                        charge_rows.append([sid, j, t, v])
+
+            for j in aircraft:
+                for d in destinations:
+                    for t in periods:
+                        z = _val(vars_["departures"][sid][j][d][t])
+                        if z:
+                            flight_rows.append([sid, j, d, t, z])
+                        y = _val(vars_["eligibility"][sid][j][t][d])
+                        if y:
+                            elig_rows.append([sid, j, t, d, y])
+                        p = _val(vars_["passengers"][sid][j][t][d])
+                        if p:
+                            pax_rows.append([sid, j, t, d, p])
+
+            for t in periods:
+                for d in destinations:
+                    u = _val(vars_["unserved"][sid][t][d])
+                    if u:
+                        unserved_rows.append([sid, t, d, u])
+
+            for d in destinations:
+                for t in periods:
+                    ap = _val(vars_["added_departures"][sid][d][t])
+                    cp = _val(vars_["cancelled_departures"][sid][d][t])
+                    if ap or cp:
+                        adj_rows.append([sid, d, t, ap, cp])
+
+            for t in periods:
+                e = _val(vars_["emergency_capacity"][sid][t])
+                if e:
+                    emg_rows.append([sid, t, e])
+
+        written["activation"] = _write_csv(
+            out / "activation.csv",
+            ["scenario", "aircraft", "arrival_period", "initial_soc",
+             "u_activated", "F_departure_time", "energy_needed_kwh"], act_rows)
+
+        written["charging"] = _write_csv(
+            out / "charging.csv",
+            ["scenario", "aircraft", "period", "x_charge_start"], charge_rows)
+
+        written["departures"] = _write_csv(
+            out / "departures.csv",
+            ["scenario", "aircraft", "destination", "period", "z_departure"],
+            flight_rows)
+
+        written["eligibility"] = _write_csv(
+            out / "eligibility.csv",
+            ["scenario", "aircraft", "period", "destination", "Y_eligible"],
+            elig_rows)
+
+        written["passengers"] = _write_csv(
+            out / "passengers.csv",
+            ["scenario", "aircraft", "period", "destination", "xi_assigned"],
+            pax_rows)
+
+        written["unserved"] = _write_csv(
+            out / "unserved.csv",
+            ["scenario", "period", "destination", "phi_unserved"],
+            unserved_rows)
+
+        written["adjustments"] = _write_csv(
+            out / "adjustments.csv",
+            ["scenario", "destination", "period", "v_plus_added",
+             "v_minus_cancelled"], adj_rows)
+
+        written["emergency_capacity"] = _write_csv(
+            out / "emergency_capacity.csv",
+            ["scenario", "period", "b_plus_emergency"], emg_rows)
 
     # ---- summaries -----------------------------------------
     rows, totals, expected_profit = objective_breakdown(model_data)

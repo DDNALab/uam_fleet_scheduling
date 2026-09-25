@@ -1661,6 +1661,42 @@ def add_constraints_and_objective(model_data):
                         f"Passenger_capacity_{sid}_{j}_{t}_{d}"
                     )
 
+        # --------------------------------------------
+        # Eq. (16)
+        #
+        # Total passengers carried by one aircraft across
+        # all arrival groups and destinations cannot exceed
+        # its seat capacity.
+        #
+        # Eq. (14) alone only bounds each (t,d) cell by nmax,
+        # so without this an aircraft could carry nmax for
+        # every demand group it is eligible for.
+        # --------------------------------------------
+
+        for j in aircraft:
+
+            model += (
+
+                pulp.lpSum(
+
+                    passengers[sid][j][t][d]
+
+                    for t in periods
+
+                    for d in destinations
+
+                )
+
+                <=
+
+                params["evtol_capacity"]
+
+                *
+
+                activation[sid][j]
+
+            ), f"Aircraft_total_capacity_{sid}_{j}"
+
 
 
         # --------------------------------------------
