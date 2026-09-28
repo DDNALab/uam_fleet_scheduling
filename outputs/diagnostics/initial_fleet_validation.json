@@ -1,0 +1,614 @@
+[
+  {
+    "case": "no_initial_fleet_seed60",
+    "projected_objective": -36.15999999999997,
+    "detailed_objective": -36.16000000000001,
+    "first_stage_allocated": 0,
+    "same_objective": true,
+    "same_objective_after_fixing_first_stage": true,
+    "projected_audit": {
+      "rows": 0.0,
+      "integrality": 0.0,
+      "bound_error": 0.0,
+      "objective_reconciliation": 2.842170943040401e-14
+    },
+    "detailed_audit": {
+      "rows": 8.881784197001252e-16,
+      "integrality": 8.881784197001252e-16,
+      "bound_error": 2.220446049250313e-16,
+      "objective_reconciliation": 2.842170943040401e-14
+    },
+    "initial_inventory": {
+      "initial_allocated": 0,
+      "scenarios": {
+        "0": {
+          "initial_deployed": 0,
+          "departures": 3.0,
+          "incoming_completions": 3.0,
+          "max_prefix_excess": 0.0
+        },
+        "1": {
+          "initial_deployed": 0,
+          "departures": 1.0,
+          "incoming_completions": 1.0,
+          "max_prefix_excess": 0.0
+        }
+      }
+    },
+    "integer_charging_and_passenger_recovery": {
+      "0": {
+        "charging_cost_projected": 4.95,
+        "charging_cost_recovered": 4.95,
+        "departures_recovered": 3,
+        "passengers_recovered": 8
+      },
+      "1": {
+        "charging_cost_projected": 2.475,
+        "charging_cost_recovered": 2.475,
+        "departures_recovered": 1,
+        "passengers_recovered": 4
+      }
+    },
+    "projected_solver_gap": 0.0,
+    "detailed_solver_gap": 0.0
+  },
+  {
+    "case": "cheap_initial_fleet_seed60",
+    "projected_objective": 262.42,
+    "detailed_objective": 262.4200000000006,
+    "first_stage_allocated": 1,
+    "same_objective": true,
+    "same_objective_after_fixing_first_stage": true,
+    "projected_audit": {
+      "rows": 8.881784197001252e-16,
+      "integrality": 8.881784197001252e-16,
+      "bound_error": 0.0,
+      "objective_reconciliation": 0.0
+    },
+    "detailed_audit": {
+      "rows": 4.884981308350689e-14,
+      "integrality": 2.7977620220553945e-14,
+      "bound_error": 1.2212453270876722e-14,
+      "objective_reconciliation": 5.684341886080802e-14
+    },
+    "initial_inventory": {
+      "initial_allocated": 1,
+      "scenarios": {
+        "0": {
+          "initial_deployed": 1,
+          "departures": 3.0,
+          "incoming_completions": 2.0,
+          "max_prefix_excess": 0.0
+        },
+        "1": {
+          "initial_deployed": 1,
+          "departures": 2.0,
+          "incoming_completions": 1.0,
+          "max_prefix_excess": 0.0
+        }
+      }
+    },
+    "integer_charging_and_passenger_recovery": {
+      "0": {
+        "charging_cost_projected": 1.65,
+        "charging_cost_recovered": 1.65,
+        "departures_recovered": 3,
+        "passengers_recovered": 8
+      },
+      "1": {
+        "charging_cost_projected": 2.475,
+        "charging_cost_recovered": 2.475,
+        "departures_recovered": 2,
+        "passengers_recovered": 7
+      }
+    },
+    "projected_solver_gap": 0.0,
+    "detailed_solver_gap": 0.0
+  },
+  {
+    "case": "costly_initial_fleet_seed60",
+    "projected_objective": -36.15999999999997,
+    "detailed_objective": -36.15999999999997,
+    "first_stage_allocated": 0,
+    "same_objective": true,
+    "same_objective_after_fixing_first_stage": true,
+    "projected_audit": {
+      "rows": 0.0,
+      "integrality": 0.0,
+      "bound_error": 0.0,
+      "objective_reconciliation": 2.842170943040401e-14
+    },
+    "detailed_audit": {
+      "rows": 1.3322676295501878e-15,
+      "integrality": 1.3322676295501878e-15,
+      "bound_error": 0.0,
+      "objective_reconciliation": 2.842170943040401e-14
+    },
+    "initial_inventory": {
+      "initial_allocated": 0,
+      "scenarios": {
+        "0": {
+          "initial_deployed": 0,
+          "departures": 3.0,
+          "incoming_completions": 3.0,
+          "max_prefix_excess": 0.0
+        },
+        "1": {
+          "initial_deployed": 0,
+          "departures": 1.0,
+          "incoming_completions": 1.0,
+          "max_prefix_excess": 0.0
+        }
+      }
+    },
+    "integer_charging_and_passenger_recovery": {
+      "0": {
+        "charging_cost_projected": 4.95,
+        "charging_cost_recovered": 4.95,
+        "departures_recovered": 3,
+        "passengers_recovered": 8
+      },
+      "1": {
+        "charging_cost_projected": 2.475,
+        "charging_cost_recovered": 2.475,
+        "departures_recovered": 1,
+        "passengers_recovered": 4
+      }
+    },
+    "projected_solver_gap": 0.0,
+    "detailed_solver_gap": 0.0
+  },
+  {
+    "case": "mixed_seed60",
+    "projected_objective": 232.42000000000002,
+    "detailed_objective": 232.42000000000078,
+    "first_stage_allocated": 1,
+    "same_objective": true,
+    "same_objective_after_fixing_first_stage": true,
+    "projected_audit": {
+      "rows": 8.881784197001252e-16,
+      "integrality": 8.881784197001252e-16,
+      "bound_error": 0.0,
+      "objective_reconciliation": 0.0
+    },
+    "detailed_audit": {
+      "rows": 2.353672812205332e-14,
+      "integrality": 5.988860201406539e-14,
+      "bound_error": 1.554312234475219e-14,
+      "objective_reconciliation": 5.684341886080802e-14
+    },
+    "initial_inventory": {
+      "initial_allocated": 1,
+      "scenarios": {
+        "0": {
+          "initial_deployed": 1,
+          "departures": 3.0,
+          "incoming_completions": 2.0,
+          "max_prefix_excess": 0.0
+        },
+        "1": {
+          "initial_deployed": 1,
+          "departures": 2.0,
+          "incoming_completions": 1.0,
+          "max_prefix_excess": 0.0
+        }
+      }
+    },
+    "integer_charging_and_passenger_recovery": {
+      "0": {
+        "charging_cost_projected": 1.65,
+        "charging_cost_recovered": 1.65,
+        "departures_recovered": 3,
+        "passengers_recovered": 8
+      },
+      "1": {
+        "charging_cost_projected": 2.475,
+        "charging_cost_recovered": 2.475,
+        "departures_recovered": 2,
+        "passengers_recovered": 7
+      }
+    },
+    "projected_solver_gap": 0.0,
+    "detailed_solver_gap": 0.0
+  },
+  {
+    "case": "late_arrivals_seed60",
+    "projected_objective": 97.0,
+    "detailed_objective": 97.0,
+    "first_stage_allocated": 2,
+    "same_objective": true,
+    "same_objective_after_fixing_first_stage": true,
+    "projected_audit": {
+      "rows": 0.0,
+      "integrality": 0.0,
+      "bound_error": 0.0,
+      "objective_reconciliation": 0.0
+    },
+    "detailed_audit": {
+      "rows": 0.0,
+      "integrality": 0.0,
+      "bound_error": 0.0,
+      "objective_reconciliation": 0.0
+    },
+    "initial_inventory": {
+      "initial_allocated": 2,
+      "scenarios": {
+        "0": {
+          "initial_deployed": 2,
+          "departures": 2.0,
+          "incoming_completions": 0.0,
+          "max_prefix_excess": 0.0
+        },
+        "1": {
+          "initial_deployed": 2,
+          "departures": 2.0,
+          "incoming_completions": 0.0,
+          "max_prefix_excess": 0.0
+        }
+      }
+    },
+    "integer_charging_and_passenger_recovery": {
+      "0": {
+        "charging_cost_projected": 0.0,
+        "charging_cost_recovered": 0.0,
+        "departures_recovered": 2,
+        "passengers_recovered": 7
+      },
+      "1": {
+        "charging_cost_projected": 0,
+        "charging_cost_recovered": 0.0,
+        "departures_recovered": 2,
+        "passengers_recovered": 6
+      }
+    },
+    "projected_solver_gap": 0.0,
+    "detailed_solver_gap": 0.0
+  },
+  {
+    "case": "no_initial_fleet_seed61",
+    "projected_objective": -48.569999999999965,
+    "detailed_objective": -48.569999999999965,
+    "first_stage_allocated": 0,
+    "same_objective": true,
+    "same_objective_after_fixing_first_stage": true,
+    "projected_audit": {
+      "rows": 0.0,
+      "integrality": 0.0,
+      "bound_error": 0.0,
+      "objective_reconciliation": 5.684341886080802e-14
+    },
+    "detailed_audit": {
+      "rows": 8.881784197001252e-16,
+      "integrality": 4.440892098500626e-16,
+      "bound_error": 4.440892098500626e-16,
+      "objective_reconciliation": 1.4210854715202004e-14
+    },
+    "initial_inventory": {
+      "initial_allocated": 0,
+      "scenarios": {
+        "0": {
+          "initial_deployed": 0,
+          "departures": 2.0,
+          "incoming_completions": 2.0,
+          "max_prefix_excess": 0.0
+        },
+        "1": {
+          "initial_deployed": 0,
+          "departures": 1.0,
+          "incoming_completions": 1.0,
+          "max_prefix_excess": 0.0
+        }
+      }
+    },
+    "integer_charging_and_passenger_recovery": {
+      "0": {
+        "charging_cost_projected": 3.3,
+        "charging_cost_recovered": 3.3,
+        "departures_recovered": 2,
+        "passengers_recovered": 7
+      },
+      "1": {
+        "charging_cost_projected": 2.475,
+        "charging_cost_recovered": 2.475,
+        "departures_recovered": 1,
+        "passengers_recovered": 4
+      }
+    },
+    "projected_solver_gap": 0.0,
+    "detailed_solver_gap": 0.0
+  },
+  {
+    "case": "cheap_initial_fleet_seed61",
+    "projected_objective": 248.01000000000005,
+    "detailed_objective": 248.01,
+    "first_stage_allocated": 1,
+    "same_objective": true,
+    "same_objective_after_fixing_first_stage": true,
+    "projected_audit": {
+      "rows": 0.0,
+      "integrality": 0.0,
+      "bound_error": 0.0,
+      "objective_reconciliation": 5.684341886080802e-14
+    },
+    "detailed_audit": {
+      "rows": 5.551115123125783e-16,
+      "integrality": 5.551115123125783e-16,
+      "bound_error": 0.0,
+      "objective_reconciliation": 0.0
+    },
+    "initial_inventory": {
+      "initial_allocated": 1,
+      "scenarios": {
+        "0": {
+          "initial_deployed": 1,
+          "departures": 2.0,
+          "incoming_completions": 1.0,
+          "max_prefix_excess": 0.0
+        },
+        "1": {
+          "initial_deployed": 1,
+          "departures": 2.0,
+          "incoming_completions": 1.0,
+          "max_prefix_excess": 0.0
+        }
+      }
+    },
+    "integer_charging_and_passenger_recovery": {
+      "0": {
+        "charging_cost_projected": 0.0,
+        "charging_cost_recovered": 0.0,
+        "departures_recovered": 2,
+        "passengers_recovered": 7
+      },
+      "1": {
+        "charging_cost_projected": 2.475,
+        "charging_cost_recovered": 2.475,
+        "departures_recovered": 2,
+        "passengers_recovered": 7
+      }
+    },
+    "projected_solver_gap": 0.0,
+    "detailed_solver_gap": 0.0
+  },
+  {
+    "case": "costly_initial_fleet_seed61",
+    "projected_objective": -48.569999999999965,
+    "detailed_objective": -48.569999999999965,
+    "first_stage_allocated": 0,
+    "same_objective": true,
+    "same_objective_after_fixing_first_stage": true,
+    "projected_audit": {
+      "rows": 0.0,
+      "integrality": 0.0,
+      "bound_error": 0.0,
+      "objective_reconciliation": 5.684341886080802e-14
+    },
+    "detailed_audit": {
+      "rows": 0.0,
+      "integrality": 0.0,
+      "bound_error": 0.0,
+      "objective_reconciliation": 5.684341886080802e-14
+    },
+    "initial_inventory": {
+      "initial_allocated": 0,
+      "scenarios": {
+        "0": {
+          "initial_deployed": 0,
+          "departures": 2.0,
+          "incoming_completions": 2.0,
+          "max_prefix_excess": 0.0
+        },
+        "1": {
+          "initial_deployed": 0,
+          "departures": 1.0,
+          "incoming_completions": 1.0,
+          "max_prefix_excess": 0.0
+        }
+      }
+    },
+    "integer_charging_and_passenger_recovery": {
+      "0": {
+        "charging_cost_projected": 3.3,
+        "charging_cost_recovered": 3.3,
+        "departures_recovered": 2,
+        "passengers_recovered": 7
+      },
+      "1": {
+        "charging_cost_projected": 2.475,
+        "charging_cost_recovered": 2.475,
+        "departures_recovered": 1,
+        "passengers_recovered": 4
+      }
+    },
+    "projected_solver_gap": 0.0,
+    "detailed_solver_gap": 0.0
+  },
+  {
+    "case": "mixed_seed61",
+    "projected_objective": 218.01000000000005,
+    "detailed_objective": 218.01000000000005,
+    "first_stage_allocated": 1,
+    "same_objective": true,
+    "same_objective_after_fixing_first_stage": true,
+    "projected_audit": {
+      "rows": 0.0,
+      "integrality": 0.0,
+      "bound_error": 0.0,
+      "objective_reconciliation": 5.684341886080802e-14
+    },
+    "detailed_audit": {
+      "rows": 0.0,
+      "integrality": 0.0,
+      "bound_error": 0.0,
+      "objective_reconciliation": 5.684341886080802e-14
+    },
+    "initial_inventory": {
+      "initial_allocated": 1,
+      "scenarios": {
+        "0": {
+          "initial_deployed": 1,
+          "departures": 2.0,
+          "incoming_completions": 1.0,
+          "max_prefix_excess": 0.0
+        },
+        "1": {
+          "initial_deployed": 1,
+          "departures": 2.0,
+          "incoming_completions": 1.0,
+          "max_prefix_excess": 0.0
+        }
+      }
+    },
+    "integer_charging_and_passenger_recovery": {
+      "0": {
+        "charging_cost_projected": 0.0,
+        "charging_cost_recovered": 0.0,
+        "departures_recovered": 2,
+        "passengers_recovered": 7
+      },
+      "1": {
+        "charging_cost_projected": 2.475,
+        "charging_cost_recovered": 2.475,
+        "departures_recovered": 2,
+        "passengers_recovered": 7
+      }
+    },
+    "projected_solver_gap": 0.0,
+    "detailed_solver_gap": 0.0
+  },
+  {
+    "case": "late_arrivals_seed61",
+    "projected_objective": 97.0,
+    "detailed_objective": 97.0,
+    "first_stage_allocated": 2,
+    "same_objective": true,
+    "same_objective_after_fixing_first_stage": true,
+    "projected_audit": {
+      "rows": 0.0,
+      "integrality": 0.0,
+      "bound_error": 0.0,
+      "objective_reconciliation": 0.0
+    },
+    "detailed_audit": {
+      "rows": 0.0,
+      "integrality": 0.0,
+      "bound_error": 0.0,
+      "objective_reconciliation": 0.0
+    },
+    "initial_inventory": {
+      "initial_allocated": 2,
+      "scenarios": {
+        "0": {
+          "initial_deployed": 2,
+          "departures": 2.0,
+          "incoming_completions": 0.0,
+          "max_prefix_excess": 0.0
+        },
+        "1": {
+          "initial_deployed": 2,
+          "departures": 2.0,
+          "incoming_completions": 0.0,
+          "max_prefix_excess": 0.0
+        }
+      }
+    },
+    "integer_charging_and_passenger_recovery": {
+      "0": {
+        "charging_cost_projected": 0.0,
+        "charging_cost_recovered": 0.0,
+        "departures_recovered": 2,
+        "passengers_recovered": 7
+      },
+      "1": {
+        "charging_cost_projected": 0,
+        "charging_cost_recovered": 0.0,
+        "departures_recovered": 2,
+        "passengers_recovered": 6
+      }
+    },
+    "projected_solver_gap": 0.0,
+    "detailed_solver_gap": 0.0
+  },
+  {
+    "case": "zero_fleet_early_booking",
+    "projected_objective": -749.0,
+    "detailed_objective": -749.0,
+    "first_stage_allocated": 0,
+    "same_objective": true,
+    "same_objective_after_fixing_first_stage": true,
+    "projected_audit": {
+      "rows": 0.0,
+      "integrality": 0.0,
+      "bound_error": 0.0,
+      "objective_reconciliation": 0.0
+    },
+    "detailed_audit": {
+      "rows": 0.0,
+      "integrality": 0.0,
+      "bound_error": 0.0,
+      "objective_reconciliation": 0.0
+    },
+    "initial_inventory": {
+      "initial_allocated": 0,
+      "scenarios": {
+        "0": {
+          "initial_deployed": 0,
+          "departures": 0.0,
+          "incoming_completions": 0,
+          "max_prefix_excess": 0.0
+        }
+      }
+    },
+    "integer_charging_and_passenger_recovery": {
+      "0": {
+        "charging_cost_projected": 0,
+        "charging_cost_recovered": 0.0,
+        "departures_recovered": 0,
+        "passengers_recovered": 0
+      }
+    },
+    "projected_solver_gap": 0.0,
+    "detailed_solver_gap": 0.0
+  },
+  {
+    "case": "ready_fleet_early_booking",
+    "projected_objective": 132.0,
+    "detailed_objective": 132.0,
+    "first_stage_allocated": 1,
+    "same_objective": true,
+    "same_objective_after_fixing_first_stage": true,
+    "projected_audit": {
+      "rows": 0.0,
+      "integrality": 0.0,
+      "bound_error": 0.0,
+      "objective_reconciliation": 0.0
+    },
+    "detailed_audit": {
+      "rows": 0.0,
+      "integrality": 0.0,
+      "bound_error": 0.0,
+      "objective_reconciliation": 0.0
+    },
+    "initial_inventory": {
+      "initial_allocated": 1,
+      "scenarios": {
+        "0": {
+          "initial_deployed": 1,
+          "departures": 1.0,
+          "incoming_completions": 0,
+          "max_prefix_excess": 0.0
+        }
+      }
+    },
+    "integer_charging_and_passenger_recovery": {
+      "0": {
+        "charging_cost_projected": 0,
+        "charging_cost_recovered": 0.0,
+        "departures_recovered": 1,
+        "passengers_recovered": 4
+      }
+    },
+    "projected_solver_gap": 0.0,
+    "detailed_solver_gap": 0.0
+  }
+]

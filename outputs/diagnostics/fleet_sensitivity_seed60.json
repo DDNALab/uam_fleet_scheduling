@@ -1,0 +1,1682 @@
+[
+  {
+    "seed": 60,
+    "initial_fleet_cap": 0,
+    "initial_fleet_cost_per_aircraft": 240.0,
+    "status": "Optimal",
+    "solver_reported_gap": 0.0,
+    "objective": -1020.1538520165069,
+    "variables": 1895,
+    "constraints": 1105,
+    "max_constraint_violation": 0.0,
+    "max_integrality_error": 0.0,
+    "max_bound_violation": 0.0,
+    "initial_fleet_allocated": 0,
+    "expected_initial_deployed": 0.0,
+    "initial_allocation_cost": 0.0,
+    "expected_unserved_booked": 3.3000000000000007,
+    "expected_unserved_on_demand": 3.500000000000001,
+    "expected_departures": 1.6000000000000003,
+    "inventory": {
+      "8": {
+        "initial_deployed": 0.0,
+        "incoming_charged": 3.0,
+        "total_departures": 3.0,
+        "max_prefix_excess": 0.0
+      },
+      "4": {
+        "initial_deployed": 0.0,
+        "incoming_charged": 1.0,
+        "total_departures": 1.0,
+        "max_prefix_excess": 0.0
+      },
+      "5": {
+        "initial_deployed": 0.0,
+        "incoming_charged": 1.0,
+        "total_departures": 1.0,
+        "max_prefix_excess": 0.0
+      }
+    },
+    "objective_reconciliation_error": 1.1368683772161603e-13
+  },
+  {
+    "seed": 60,
+    "initial_fleet_cap": 1,
+    "initial_fleet_cost_per_aircraft": 240.0,
+    "status": "Optimal",
+    "solver_reported_gap": 0.0,
+    "objective": -530.035237250357,
+    "variables": 1895,
+    "constraints": 1105,
+    "max_constraint_violation": 0.0,
+    "max_integrality_error": 0.0,
+    "max_bound_violation": 0.0,
+    "initial_fleet_allocated": 1,
+    "expected_initial_deployed": 1.0000000000000002,
+    "initial_allocation_cost": 240.0,
+    "expected_unserved_booked": 1.7000000000000004,
+    "expected_unserved_on_demand": 1.8000000000000003,
+    "expected_departures": 2.6000000000000005,
+    "inventory": {
+      "8": {
+        "initial_deployed": 1.0,
+        "incoming_charged": 3.0,
+        "total_departures": 4.0,
+        "max_prefix_excess": 0.0
+      },
+      "4": {
+        "initial_deployed": 1.0,
+        "incoming_charged": 1.0,
+        "total_departures": 2.0,
+        "max_prefix_excess": 0.0
+      },
+      "5": {
+        "initial_deployed": 1.0,
+        "incoming_charged": 1.0,
+        "total_departures": 2.0,
+        "max_prefix_excess": 0.0
+      }
+    },
+    "objective_reconciliation_error": 1.1368683772161603e-13
+  },
+  {
+    "seed": 60,
+    "initial_fleet_cap": 2,
+    "initial_fleet_cost_per_aircraft": 240.0,
+    "status": "Optimal",
+    "solver_reported_gap": 0.0,
+    "objective": -263.88290322443066,
+    "variables": 1895,
+    "constraints": 1105,
+    "max_constraint_violation": 2.220446049250313e-16,
+    "max_integrality_error": 2.220446049250313e-16,
+    "max_bound_violation": 0.0,
+    "initial_fleet_allocated": 2,
+    "expected_initial_deployed": 2.0000000000000004,
+    "initial_allocation_cost": 480.0,
+    "expected_unserved_booked": 0.7000000000000001,
+    "expected_unserved_on_demand": 0.6000000000000001,
+    "expected_departures": 3.600000000000001,
+    "inventory": {
+      "8": {
+        "initial_deployed": 2.0,
+        "incoming_charged": 3.0,
+        "total_departures": 5.0,
+        "max_prefix_excess": 0.0
+      },
+      "4": {
+        "initial_deployed": 2.0,
+        "incoming_charged": 1.0,
+        "total_departures": 3.0,
+        "max_prefix_excess": 0.0
+      },
+      "5": {
+        "initial_deployed": 2.0,
+        "incoming_charged": 1.0,
+        "total_departures": 3.0,
+        "max_prefix_excess": 0.0
+      }
+    },
+    "objective_reconciliation_error": 1.7053025658242404e-13
+  },
+  {
+    "seed": 60,
+    "initial_fleet_cap": 3,
+    "initial_fleet_cost_per_aircraft": 240.0,
+    "status": "Optimal",
+    "solver_reported_gap": 0.0,
+    "objective": -180.18270113479502,
+    "variables": 1895,
+    "constraints": 1105,
+    "max_constraint_violation": 0.0,
+    "max_integrality_error": 0.0,
+    "max_bound_violation": 0.0,
+    "initial_fleet_allocated": 3,
+    "expected_initial_deployed": 3.0,
+    "initial_allocation_cost": 720.0,
+    "expected_unserved_booked": 0.0,
+    "expected_unserved_on_demand": 0.0,
+    "expected_departures": 4.2,
+    "inventory": {
+      "8": {
+        "initial_deployed": 3.0,
+        "incoming_charged": 2.0,
+        "total_departures": 5.0,
+        "max_prefix_excess": 0.0
+      },
+      "4": {
+        "initial_deployed": 3.0,
+        "incoming_charged": 1.0,
+        "total_departures": 4.0,
+        "max_prefix_excess": 0.0
+      },
+      "5": {
+        "initial_deployed": 3.0,
+        "incoming_charged": 0.0,
+        "total_departures": 3.0,
+        "max_prefix_excess": 0.0
+      }
+    },
+    "objective_reconciliation_error": 2.2737367544323206e-13
+  },
+  {
+    "seed": 60,
+    "initial_fleet_cap": 4,
+    "initial_fleet_cost_per_aircraft": 240.0,
+    "status": "Optimal",
+    "solver_reported_gap": 0.0,
+    "objective": -180.18270113479502,
+    "variables": 1895,
+    "constraints": 1105,
+    "max_constraint_violation": 0.0,
+    "max_integrality_error": 0.0,
+    "max_bound_violation": 0.0,
+    "initial_fleet_allocated": 3,
+    "expected_initial_deployed": 3.0,
+    "initial_allocation_cost": 720.0,
+    "expected_unserved_booked": 0.0,
+    "expected_unserved_on_demand": 0.0,
+    "expected_departures": 4.2,
+    "inventory": {
+      "8": {
+        "initial_deployed": 3.0,
+        "incoming_charged": 2.0,
+        "total_departures": 5.0,
+        "max_prefix_excess": 0.0
+      },
+      "4": {
+        "initial_deployed": 3.0,
+        "incoming_charged": 1.0,
+        "total_departures": 4.0,
+        "max_prefix_excess": 0.0
+      },
+      "5": {
+        "initial_deployed": 3.0,
+        "incoming_charged": 0.0,
+        "total_departures": 3.0,
+        "max_prefix_excess": 0.0
+      }
+    },
+    "objective_reconciliation_error": 2.2737367544323206e-13
+  },
+  {
+    "seed": 60,
+    "initial_fleet_cap": 6,
+    "initial_fleet_cost_per_aircraft": 240.0,
+    "status": "Optimal",
+    "solver_reported_gap": 0.0,
+    "objective": -180.18270113479502,
+    "variables": 1895,
+    "constraints": 1105,
+    "max_constraint_violation": 0.0,
+    "max_integrality_error": 0.0,
+    "max_bound_violation": 0.0,
+    "initial_fleet_allocated": 3,
+    "expected_initial_deployed": 3.0,
+    "initial_allocation_cost": 720.0,
+    "expected_unserved_booked": 0.0,
+    "expected_unserved_on_demand": 0.0,
+    "expected_departures": 4.2,
+    "inventory": {
+      "8": {
+        "initial_deployed": 3.0,
+        "incoming_charged": 2.0,
+        "total_departures": 5.0,
+        "max_prefix_excess": 0.0
+      },
+      "4": {
+        "initial_deployed": 3.0,
+        "incoming_charged": 1.0,
+        "total_departures": 4.0,
+        "max_prefix_excess": 0.0
+      },
+      "5": {
+        "initial_deployed": 3.0,
+        "incoming_charged": 0.0,
+        "total_departures": 3.0,
+        "max_prefix_excess": 0.0
+      }
+    },
+    "objective_reconciliation_error": 2.2737367544323206e-13
+  },
+  {
+    "seed": 60,
+    "initial_fleet_cap": 0,
+    "initial_fleet_cost_per_aircraft": 300.0,
+    "status": "Optimal",
+    "solver_reported_gap": 0.0,
+    "objective": -1020.1538520165069,
+    "variables": 1895,
+    "constraints": 1105,
+    "max_constraint_violation": 0.0,
+    "max_integrality_error": 0.0,
+    "max_bound_violation": 0.0,
+    "initial_fleet_allocated": 0,
+    "expected_initial_deployed": 0.0,
+    "initial_allocation_cost": 0.0,
+    "expected_unserved_booked": 3.3000000000000007,
+    "expected_unserved_on_demand": 3.500000000000001,
+    "expected_departures": 1.6000000000000003,
+    "inventory": {
+      "8": {
+        "initial_deployed": 0.0,
+        "incoming_charged": 3.0,
+        "total_departures": 3.0,
+        "max_prefix_excess": 0.0
+      },
+      "4": {
+        "initial_deployed": 0.0,
+        "incoming_charged": 1.0,
+        "total_departures": 1.0,
+        "max_prefix_excess": 0.0
+      },
+      "5": {
+        "initial_deployed": 0.0,
+        "incoming_charged": 1.0,
+        "total_departures": 1.0,
+        "max_prefix_excess": 0.0
+      }
+    },
+    "objective_reconciliation_error": 1.1368683772161603e-13
+  },
+  {
+    "seed": 60,
+    "initial_fleet_cap": 1,
+    "initial_fleet_cost_per_aircraft": 300.0,
+    "status": "Optimal",
+    "solver_reported_gap": 0.0,
+    "objective": -590.035237250357,
+    "variables": 1895,
+    "constraints": 1105,
+    "max_constraint_violation": 0.0,
+    "max_integrality_error": 0.0,
+    "max_bound_violation": 0.0,
+    "initial_fleet_allocated": 1,
+    "expected_initial_deployed": 1.0000000000000002,
+    "initial_allocation_cost": 300.0,
+    "expected_unserved_booked": 1.7000000000000004,
+    "expected_unserved_on_demand": 1.8000000000000003,
+    "expected_departures": 2.6000000000000005,
+    "inventory": {
+      "8": {
+        "initial_deployed": 1.0,
+        "incoming_charged": 3.0,
+        "total_departures": 4.0,
+        "max_prefix_excess": 0.0
+      },
+      "4": {
+        "initial_deployed": 1.0,
+        "incoming_charged": 1.0,
+        "total_departures": 2.0,
+        "max_prefix_excess": 0.0
+      },
+      "5": {
+        "initial_deployed": 1.0,
+        "incoming_charged": 1.0,
+        "total_departures": 2.0,
+        "max_prefix_excess": 0.0
+      }
+    },
+    "objective_reconciliation_error": 1.1368683772161603e-13
+  },
+  {
+    "seed": 60,
+    "initial_fleet_cap": 2,
+    "initial_fleet_cost_per_aircraft": 300.0,
+    "status": "Optimal",
+    "solver_reported_gap": 0.0,
+    "objective": -383.88290322443066,
+    "variables": 1895,
+    "constraints": 1105,
+    "max_constraint_violation": 2.220446049250313e-16,
+    "max_integrality_error": 2.220446049250313e-16,
+    "max_bound_violation": 0.0,
+    "initial_fleet_allocated": 2,
+    "expected_initial_deployed": 2.0000000000000004,
+    "initial_allocation_cost": 600.0,
+    "expected_unserved_booked": 0.7000000000000001,
+    "expected_unserved_on_demand": 0.6000000000000001,
+    "expected_departures": 3.600000000000001,
+    "inventory": {
+      "8": {
+        "initial_deployed": 2.0,
+        "incoming_charged": 3.0,
+        "total_departures": 5.0,
+        "max_prefix_excess": 0.0
+      },
+      "4": {
+        "initial_deployed": 2.0,
+        "incoming_charged": 1.0,
+        "total_departures": 3.0,
+        "max_prefix_excess": 0.0
+      },
+      "5": {
+        "initial_deployed": 2.0,
+        "incoming_charged": 1.0000000000000002,
+        "total_departures": 3.0,
+        "max_prefix_excess": 0.0
+      }
+    },
+    "objective_reconciliation_error": 1.7053025658242404e-13
+  },
+  {
+    "seed": 60,
+    "initial_fleet_cap": 3,
+    "initial_fleet_cost_per_aircraft": 300.0,
+    "status": "Optimal",
+    "solver_reported_gap": 0.0,
+    "objective": -360.182701134795,
+    "variables": 1895,
+    "constraints": 1105,
+    "max_constraint_violation": 0.0,
+    "max_integrality_error": 0.0,
+    "max_bound_violation": 0.0,
+    "initial_fleet_allocated": 3,
+    "expected_initial_deployed": 3.0,
+    "initial_allocation_cost": 900.0,
+    "expected_unserved_booked": 0.0,
+    "expected_unserved_on_demand": 0.0,
+    "expected_departures": 4.2,
+    "inventory": {
+      "8": {
+        "initial_deployed": 3.0,
+        "incoming_charged": 2.0,
+        "total_departures": 5.0,
+        "max_prefix_excess": 0.0
+      },
+      "4": {
+        "initial_deployed": 3.0,
+        "incoming_charged": 1.0,
+        "total_departures": 4.0,
+        "max_prefix_excess": 0.0
+      },
+      "5": {
+        "initial_deployed": 3.0,
+        "incoming_charged": 0.0,
+        "total_departures": 3.0,
+        "max_prefix_excess": 0.0
+      }
+    },
+    "objective_reconciliation_error": 2.2737367544323206e-13
+  },
+  {
+    "seed": 60,
+    "initial_fleet_cap": 4,
+    "initial_fleet_cost_per_aircraft": 300.0,
+    "status": "Optimal",
+    "solver_reported_gap": 0.0,
+    "objective": -360.182701134795,
+    "variables": 1895,
+    "constraints": 1105,
+    "max_constraint_violation": 0.0,
+    "max_integrality_error": 0.0,
+    "max_bound_violation": 0.0,
+    "initial_fleet_allocated": 3,
+    "expected_initial_deployed": 3.0,
+    "initial_allocation_cost": 900.0,
+    "expected_unserved_booked": 0.0,
+    "expected_unserved_on_demand": 0.0,
+    "expected_departures": 4.2,
+    "inventory": {
+      "8": {
+        "initial_deployed": 3.0,
+        "incoming_charged": 2.0,
+        "total_departures": 5.0,
+        "max_prefix_excess": 0.0
+      },
+      "4": {
+        "initial_deployed": 3.0,
+        "incoming_charged": 1.0,
+        "total_departures": 4.0,
+        "max_prefix_excess": 0.0
+      },
+      "5": {
+        "initial_deployed": 3.0,
+        "incoming_charged": 0.0,
+        "total_departures": 3.0,
+        "max_prefix_excess": 0.0
+      }
+    },
+    "objective_reconciliation_error": 2.2737367544323206e-13
+  },
+  {
+    "seed": 60,
+    "initial_fleet_cap": 6,
+    "initial_fleet_cost_per_aircraft": 300.0,
+    "status": "Optimal",
+    "solver_reported_gap": 0.0,
+    "objective": -360.182701134795,
+    "variables": 1895,
+    "constraints": 1105,
+    "max_constraint_violation": 0.0,
+    "max_integrality_error": 0.0,
+    "max_bound_violation": 0.0,
+    "initial_fleet_allocated": 3,
+    "expected_initial_deployed": 3.0,
+    "initial_allocation_cost": 900.0,
+    "expected_unserved_booked": 0.0,
+    "expected_unserved_on_demand": 0.0,
+    "expected_departures": 4.2,
+    "inventory": {
+      "8": {
+        "initial_deployed": 3.0,
+        "incoming_charged": 2.0,
+        "total_departures": 5.0,
+        "max_prefix_excess": 0.0
+      },
+      "4": {
+        "initial_deployed": 3.0,
+        "incoming_charged": 1.0,
+        "total_departures": 4.0,
+        "max_prefix_excess": 0.0
+      },
+      "5": {
+        "initial_deployed": 3.0,
+        "incoming_charged": 0.0,
+        "total_departures": 3.0,
+        "max_prefix_excess": 0.0
+      }
+    },
+    "objective_reconciliation_error": 2.2737367544323206e-13
+  },
+  {
+    "seed": 60,
+    "initial_fleet_cap": 0,
+    "initial_fleet_cost_per_aircraft": 350.0,
+    "status": "Optimal",
+    "solver_reported_gap": 0.0,
+    "objective": -1020.1538520165069,
+    "variables": 1895,
+    "constraints": 1105,
+    "max_constraint_violation": 0.0,
+    "max_integrality_error": 0.0,
+    "max_bound_violation": 0.0,
+    "initial_fleet_allocated": 0,
+    "expected_initial_deployed": 0.0,
+    "initial_allocation_cost": 0.0,
+    "expected_unserved_booked": 3.3000000000000007,
+    "expected_unserved_on_demand": 3.500000000000001,
+    "expected_departures": 1.6000000000000003,
+    "inventory": {
+      "8": {
+        "initial_deployed": 0.0,
+        "incoming_charged": 3.0,
+        "total_departures": 3.0,
+        "max_prefix_excess": 0.0
+      },
+      "4": {
+        "initial_deployed": 0.0,
+        "incoming_charged": 1.0,
+        "total_departures": 1.0,
+        "max_prefix_excess": 0.0
+      },
+      "5": {
+        "initial_deployed": 0.0,
+        "incoming_charged": 1.0,
+        "total_departures": 1.0,
+        "max_prefix_excess": 0.0
+      }
+    },
+    "objective_reconciliation_error": 1.1368683772161603e-13
+  },
+  {
+    "seed": 60,
+    "initial_fleet_cap": 1,
+    "initial_fleet_cost_per_aircraft": 350.0,
+    "status": "Optimal",
+    "solver_reported_gap": 0.0,
+    "objective": -640.035237250357,
+    "variables": 1895,
+    "constraints": 1105,
+    "max_constraint_violation": 0.0,
+    "max_integrality_error": 0.0,
+    "max_bound_violation": 0.0,
+    "initial_fleet_allocated": 1,
+    "expected_initial_deployed": 1.0000000000000002,
+    "initial_allocation_cost": 350.0,
+    "expected_unserved_booked": 1.7000000000000004,
+    "expected_unserved_on_demand": 1.8000000000000003,
+    "expected_departures": 2.6000000000000005,
+    "inventory": {
+      "8": {
+        "initial_deployed": 1.0,
+        "incoming_charged": 3.0,
+        "total_departures": 4.0,
+        "max_prefix_excess": 0.0
+      },
+      "4": {
+        "initial_deployed": 1.0,
+        "incoming_charged": 1.0,
+        "total_departures": 2.0,
+        "max_prefix_excess": 0.0
+      },
+      "5": {
+        "initial_deployed": 1.0,
+        "incoming_charged": 1.0,
+        "total_departures": 2.0,
+        "max_prefix_excess": 0.0
+      }
+    },
+    "objective_reconciliation_error": 1.1368683772161603e-13
+  },
+  {
+    "seed": 60,
+    "initial_fleet_cap": 2,
+    "initial_fleet_cost_per_aircraft": 350.0,
+    "status": "Optimal",
+    "solver_reported_gap": 0.0,
+    "objective": -483.88290322443066,
+    "variables": 1895,
+    "constraints": 1105,
+    "max_constraint_violation": 2.220446049250313e-16,
+    "max_integrality_error": 2.220446049250313e-16,
+    "max_bound_violation": 0.0,
+    "initial_fleet_allocated": 2,
+    "expected_initial_deployed": 2.0000000000000004,
+    "initial_allocation_cost": 700.0,
+    "expected_unserved_booked": 0.7000000000000001,
+    "expected_unserved_on_demand": 0.6000000000000001,
+    "expected_departures": 3.600000000000001,
+    "inventory": {
+      "8": {
+        "initial_deployed": 2.0,
+        "incoming_charged": 3.0,
+        "total_departures": 5.0,
+        "max_prefix_excess": 0.0
+      },
+      "4": {
+        "initial_deployed": 2.0,
+        "incoming_charged": 1.0,
+        "total_departures": 3.0,
+        "max_prefix_excess": 0.0
+      },
+      "5": {
+        "initial_deployed": 2.0,
+        "incoming_charged": 1.0,
+        "total_departures": 3.0,
+        "max_prefix_excess": 0.0
+      }
+    },
+    "objective_reconciliation_error": 1.7053025658242404e-13
+  },
+  {
+    "seed": 60,
+    "initial_fleet_cap": 3,
+    "initial_fleet_cost_per_aircraft": 350.0,
+    "status": "Optimal",
+    "solver_reported_gap": 0.0,
+    "objective": -483.88290322443066,
+    "variables": 1895,
+    "constraints": 1105,
+    "max_constraint_violation": 0.0,
+    "max_integrality_error": 0.0,
+    "max_bound_violation": 0.0,
+    "initial_fleet_allocated": 2,
+    "expected_initial_deployed": 2.0000000000000004,
+    "initial_allocation_cost": 700.0,
+    "expected_unserved_booked": 0.7000000000000001,
+    "expected_unserved_on_demand": 0.6000000000000001,
+    "expected_departures": 3.600000000000001,
+    "inventory": {
+      "8": {
+        "initial_deployed": 2.0,
+        "incoming_charged": 3.0,
+        "total_departures": 5.0,
+        "max_prefix_excess": 0.0
+      },
+      "4": {
+        "initial_deployed": 2.0,
+        "incoming_charged": 1.0,
+        "total_departures": 3.0,
+        "max_prefix_excess": 0.0
+      },
+      "5": {
+        "initial_deployed": 2.0,
+        "incoming_charged": 1.0,
+        "total_departures": 3.0,
+        "max_prefix_excess": 0.0
+      }
+    },
+    "objective_reconciliation_error": 1.7053025658242404e-13
+  },
+  {
+    "seed": 60,
+    "initial_fleet_cap": 4,
+    "initial_fleet_cost_per_aircraft": 350.0,
+    "status": "Optimal",
+    "solver_reported_gap": 0.0,
+    "objective": -483.88290322443066,
+    "variables": 1895,
+    "constraints": 1105,
+    "max_constraint_violation": 0.0,
+    "max_integrality_error": 0.0,
+    "max_bound_violation": 0.0,
+    "initial_fleet_allocated": 2,
+    "expected_initial_deployed": 2.0000000000000004,
+    "initial_allocation_cost": 700.0,
+    "expected_unserved_booked": 0.7000000000000001,
+    "expected_unserved_on_demand": 0.6000000000000001,
+    "expected_departures": 3.600000000000001,
+    "inventory": {
+      "8": {
+        "initial_deployed": 2.0,
+        "incoming_charged": 3.0,
+        "total_departures": 5.0,
+        "max_prefix_excess": 0.0
+      },
+      "4": {
+        "initial_deployed": 2.0,
+        "incoming_charged": 1.0,
+        "total_departures": 3.0,
+        "max_prefix_excess": 0.0
+      },
+      "5": {
+        "initial_deployed": 2.0,
+        "incoming_charged": 1.0,
+        "total_departures": 3.0,
+        "max_prefix_excess": 0.0
+      }
+    },
+    "objective_reconciliation_error": 1.7053025658242404e-13
+  },
+  {
+    "seed": 60,
+    "initial_fleet_cap": 6,
+    "initial_fleet_cost_per_aircraft": 350.0,
+    "status": "Optimal",
+    "solver_reported_gap": 0.0,
+    "objective": -483.88290322443066,
+    "variables": 1895,
+    "constraints": 1105,
+    "max_constraint_violation": 2.220446049250313e-16,
+    "max_integrality_error": 2.220446049250313e-16,
+    "max_bound_violation": 0.0,
+    "initial_fleet_allocated": 2,
+    "expected_initial_deployed": 2.0000000000000004,
+    "initial_allocation_cost": 700.0,
+    "expected_unserved_booked": 0.7000000000000002,
+    "expected_unserved_on_demand": 0.6000000000000001,
+    "expected_departures": 3.600000000000001,
+    "inventory": {
+      "8": {
+        "initial_deployed": 2.0,
+        "incoming_charged": 3.0,
+        "total_departures": 5.0,
+        "max_prefix_excess": 0.0
+      },
+      "4": {
+        "initial_deployed": 2.0,
+        "incoming_charged": 1.0,
+        "total_departures": 3.0,
+        "max_prefix_excess": 0.0
+      },
+      "5": {
+        "initial_deployed": 2.0,
+        "incoming_charged": 1.0,
+        "total_departures": 3.0,
+        "max_prefix_excess": 0.0
+      }
+    },
+    "objective_reconciliation_error": 1.7053025658242404e-13
+  },
+  {
+    "seed": 60,
+    "initial_fleet_cap": 0,
+    "initial_fleet_cost_per_aircraft": 400.0,
+    "status": "Optimal",
+    "solver_reported_gap": 0.0,
+    "objective": -1020.1538520165069,
+    "variables": 1895,
+    "constraints": 1105,
+    "max_constraint_violation": 0.0,
+    "max_integrality_error": 0.0,
+    "max_bound_violation": 0.0,
+    "initial_fleet_allocated": 0,
+    "expected_initial_deployed": 0.0,
+    "initial_allocation_cost": 0.0,
+    "expected_unserved_booked": 3.3000000000000007,
+    "expected_unserved_on_demand": 3.500000000000001,
+    "expected_departures": 1.6000000000000003,
+    "inventory": {
+      "8": {
+        "initial_deployed": 0.0,
+        "incoming_charged": 3.0,
+        "total_departures": 3.0,
+        "max_prefix_excess": 0.0
+      },
+      "4": {
+        "initial_deployed": 0.0,
+        "incoming_charged": 1.0,
+        "total_departures": 1.0,
+        "max_prefix_excess": 0.0
+      },
+      "5": {
+        "initial_deployed": 0.0,
+        "incoming_charged": 1.0,
+        "total_departures": 1.0,
+        "max_prefix_excess": 0.0
+      }
+    },
+    "objective_reconciliation_error": 1.1368683772161603e-13
+  },
+  {
+    "seed": 60,
+    "initial_fleet_cap": 1,
+    "initial_fleet_cost_per_aircraft": 400.0,
+    "status": "Optimal",
+    "solver_reported_gap": 0.0,
+    "objective": -690.035237250357,
+    "variables": 1895,
+    "constraints": 1105,
+    "max_constraint_violation": 0.0,
+    "max_integrality_error": 0.0,
+    "max_bound_violation": 0.0,
+    "initial_fleet_allocated": 1,
+    "expected_initial_deployed": 1.0000000000000002,
+    "initial_allocation_cost": 400.0,
+    "expected_unserved_booked": 1.7000000000000004,
+    "expected_unserved_on_demand": 1.8000000000000003,
+    "expected_departures": 2.6000000000000005,
+    "inventory": {
+      "8": {
+        "initial_deployed": 1.0,
+        "incoming_charged": 3.0,
+        "total_departures": 4.0,
+        "max_prefix_excess": 0.0
+      },
+      "4": {
+        "initial_deployed": 1.0,
+        "incoming_charged": 1.0,
+        "total_departures": 2.0,
+        "max_prefix_excess": 0.0
+      },
+      "5": {
+        "initial_deployed": 1.0,
+        "incoming_charged": 1.0,
+        "total_departures": 2.0,
+        "max_prefix_excess": 0.0
+      }
+    },
+    "objective_reconciliation_error": 1.1368683772161603e-13
+  },
+  {
+    "seed": 60,
+    "initial_fleet_cap": 2,
+    "initial_fleet_cost_per_aircraft": 400.0,
+    "status": "Optimal",
+    "solver_reported_gap": 0.0,
+    "objective": -583.8829032244307,
+    "variables": 1895,
+    "constraints": 1105,
+    "max_constraint_violation": 0.0,
+    "max_integrality_error": 0.0,
+    "max_bound_violation": 0.0,
+    "initial_fleet_allocated": 2,
+    "expected_initial_deployed": 2.0000000000000004,
+    "initial_allocation_cost": 800.0,
+    "expected_unserved_booked": 0.7000000000000001,
+    "expected_unserved_on_demand": 0.6000000000000001,
+    "expected_departures": 3.600000000000001,
+    "inventory": {
+      "8": {
+        "initial_deployed": 2.0,
+        "incoming_charged": 3.0,
+        "total_departures": 5.0,
+        "max_prefix_excess": 0.0
+      },
+      "4": {
+        "initial_deployed": 2.0,
+        "incoming_charged": 1.0,
+        "total_departures": 3.0,
+        "max_prefix_excess": 0.0
+      },
+      "5": {
+        "initial_deployed": 2.0,
+        "incoming_charged": 1.0,
+        "total_departures": 3.0,
+        "max_prefix_excess": 0.0
+      }
+    },
+    "objective_reconciliation_error": 1.1368683772161603e-13
+  },
+  {
+    "seed": 60,
+    "initial_fleet_cap": 3,
+    "initial_fleet_cost_per_aircraft": 400.0,
+    "status": "Optimal",
+    "solver_reported_gap": 0.0,
+    "objective": -583.8829032244307,
+    "variables": 1895,
+    "constraints": 1105,
+    "max_constraint_violation": 0.0,
+    "max_integrality_error": 0.0,
+    "max_bound_violation": 0.0,
+    "initial_fleet_allocated": 2,
+    "expected_initial_deployed": 2.0000000000000004,
+    "initial_allocation_cost": 800.0,
+    "expected_unserved_booked": 0.7000000000000001,
+    "expected_unserved_on_demand": 0.6000000000000001,
+    "expected_departures": 3.600000000000001,
+    "inventory": {
+      "8": {
+        "initial_deployed": 2.0,
+        "incoming_charged": 3.0,
+        "total_departures": 5.0,
+        "max_prefix_excess": 0.0
+      },
+      "4": {
+        "initial_deployed": 2.0,
+        "incoming_charged": 1.0,
+        "total_departures": 3.0,
+        "max_prefix_excess": 0.0
+      },
+      "5": {
+        "initial_deployed": 2.0,
+        "incoming_charged": 1.0,
+        "total_departures": 3.0,
+        "max_prefix_excess": 0.0
+      }
+    },
+    "objective_reconciliation_error": 1.1368683772161603e-13
+  },
+  {
+    "seed": 60,
+    "initial_fleet_cap": 4,
+    "initial_fleet_cost_per_aircraft": 400.0,
+    "status": "Optimal",
+    "solver_reported_gap": 0.0,
+    "objective": -583.8829032244307,
+    "variables": 1895,
+    "constraints": 1105,
+    "max_constraint_violation": 0.0,
+    "max_integrality_error": 0.0,
+    "max_bound_violation": 0.0,
+    "initial_fleet_allocated": 2,
+    "expected_initial_deployed": 2.0000000000000004,
+    "initial_allocation_cost": 800.0,
+    "expected_unserved_booked": 0.7000000000000001,
+    "expected_unserved_on_demand": 0.6000000000000001,
+    "expected_departures": 3.600000000000001,
+    "inventory": {
+      "8": {
+        "initial_deployed": 2.0,
+        "incoming_charged": 3.0,
+        "total_departures": 5.0,
+        "max_prefix_excess": 0.0
+      },
+      "4": {
+        "initial_deployed": 2.0,
+        "incoming_charged": 1.0,
+        "total_departures": 3.0,
+        "max_prefix_excess": 0.0
+      },
+      "5": {
+        "initial_deployed": 2.0,
+        "incoming_charged": 1.0,
+        "total_departures": 3.0,
+        "max_prefix_excess": 0.0
+      }
+    },
+    "objective_reconciliation_error": 1.1368683772161603e-13
+  },
+  {
+    "seed": 60,
+    "initial_fleet_cap": 6,
+    "initial_fleet_cost_per_aircraft": 400.0,
+    "status": "Optimal",
+    "solver_reported_gap": 0.0,
+    "objective": -583.8829032244307,
+    "variables": 1895,
+    "constraints": 1105,
+    "max_constraint_violation": 4.440892098500626e-16,
+    "max_integrality_error": 4.440892098500626e-16,
+    "max_bound_violation": 0.0,
+    "initial_fleet_allocated": 2,
+    "expected_initial_deployed": 2.0000000000000004,
+    "initial_allocation_cost": 800.0,
+    "expected_unserved_booked": 0.7000000000000002,
+    "expected_unserved_on_demand": 0.6000000000000001,
+    "expected_departures": 3.600000000000001,
+    "inventory": {
+      "8": {
+        "initial_deployed": 2.0,
+        "incoming_charged": 3.0,
+        "total_departures": 5.0,
+        "max_prefix_excess": 0.0
+      },
+      "4": {
+        "initial_deployed": 2.0,
+        "incoming_charged": 1.0,
+        "total_departures": 3.0,
+        "max_prefix_excess": 0.0
+      },
+      "5": {
+        "initial_deployed": 2.0,
+        "incoming_charged": 1.0,
+        "total_departures": 3.0,
+        "max_prefix_excess": 0.0
+      }
+    },
+    "objective_reconciliation_error": 1.1368683772161603e-13
+  },
+  {
+    "seed": 60,
+    "initial_fleet_cap": 0,
+    "initial_fleet_cost_per_aircraft": 500.0,
+    "status": "Optimal",
+    "solver_reported_gap": 0.0,
+    "objective": -1020.1538520165069,
+    "variables": 1895,
+    "constraints": 1105,
+    "max_constraint_violation": 0.0,
+    "max_integrality_error": 0.0,
+    "max_bound_violation": 0.0,
+    "initial_fleet_allocated": 0,
+    "expected_initial_deployed": 0.0,
+    "initial_allocation_cost": 0.0,
+    "expected_unserved_booked": 3.3000000000000007,
+    "expected_unserved_on_demand": 3.500000000000001,
+    "expected_departures": 1.6000000000000003,
+    "inventory": {
+      "8": {
+        "initial_deployed": 0.0,
+        "incoming_charged": 3.0,
+        "total_departures": 3.0,
+        "max_prefix_excess": 0.0
+      },
+      "4": {
+        "initial_deployed": 0.0,
+        "incoming_charged": 1.0,
+        "total_departures": 1.0,
+        "max_prefix_excess": 0.0
+      },
+      "5": {
+        "initial_deployed": 0.0,
+        "incoming_charged": 1.0,
+        "total_departures": 1.0,
+        "max_prefix_excess": 0.0
+      }
+    },
+    "objective_reconciliation_error": 1.1368683772161603e-13
+  },
+  {
+    "seed": 60,
+    "initial_fleet_cap": 1,
+    "initial_fleet_cost_per_aircraft": 500.0,
+    "status": "Optimal",
+    "solver_reported_gap": 0.0,
+    "objective": -790.035237250357,
+    "variables": 1895,
+    "constraints": 1105,
+    "max_constraint_violation": 3.3306690738754696e-16,
+    "max_integrality_error": 3.3306690738754696e-16,
+    "max_bound_violation": 0.0,
+    "initial_fleet_allocated": 1,
+    "expected_initial_deployed": 1.0000000000000002,
+    "initial_allocation_cost": 500.0,
+    "expected_unserved_booked": 1.7000000000000004,
+    "expected_unserved_on_demand": 1.8000000000000003,
+    "expected_departures": 2.6000000000000005,
+    "inventory": {
+      "8": {
+        "initial_deployed": 1.0,
+        "incoming_charged": 3.0,
+        "total_departures": 4.0,
+        "max_prefix_excess": 0.0
+      },
+      "4": {
+        "initial_deployed": 1.0,
+        "incoming_charged": 1.0,
+        "total_departures": 2.0,
+        "max_prefix_excess": 0.0
+      },
+      "5": {
+        "initial_deployed": 1.0,
+        "incoming_charged": 1.0,
+        "total_departures": 2.0,
+        "max_prefix_excess": 0.0
+      }
+    },
+    "objective_reconciliation_error": 0.0
+  },
+  {
+    "seed": 60,
+    "initial_fleet_cap": 2,
+    "initial_fleet_cost_per_aircraft": 500.0,
+    "status": "Optimal",
+    "solver_reported_gap": 0.0,
+    "objective": -783.8829032244307,
+    "variables": 1895,
+    "constraints": 1105,
+    "max_constraint_violation": 0.0,
+    "max_integrality_error": 0.0,
+    "max_bound_violation": 0.0,
+    "initial_fleet_allocated": 2,
+    "expected_initial_deployed": 2.0000000000000004,
+    "initial_allocation_cost": 1000.0,
+    "expected_unserved_booked": 0.7000000000000001,
+    "expected_unserved_on_demand": 0.6000000000000001,
+    "expected_departures": 3.600000000000001,
+    "inventory": {
+      "8": {
+        "initial_deployed": 2.0,
+        "incoming_charged": 3.0,
+        "total_departures": 5.0,
+        "max_prefix_excess": 0.0
+      },
+      "4": {
+        "initial_deployed": 2.0,
+        "incoming_charged": 1.0,
+        "total_departures": 3.0,
+        "max_prefix_excess": 0.0
+      },
+      "5": {
+        "initial_deployed": 2.0,
+        "incoming_charged": 1.0,
+        "total_departures": 3.0,
+        "max_prefix_excess": 0.0
+      }
+    },
+    "objective_reconciliation_error": 1.1368683772161603e-13
+  },
+  {
+    "seed": 60,
+    "initial_fleet_cap": 3,
+    "initial_fleet_cost_per_aircraft": 500.0,
+    "status": "Optimal",
+    "solver_reported_gap": 0.0,
+    "objective": -783.8829032244307,
+    "variables": 1895,
+    "constraints": 1105,
+    "max_constraint_violation": 0.0,
+    "max_integrality_error": 0.0,
+    "max_bound_violation": 0.0,
+    "initial_fleet_allocated": 2,
+    "expected_initial_deployed": 2.0000000000000004,
+    "initial_allocation_cost": 1000.0,
+    "expected_unserved_booked": 0.7000000000000001,
+    "expected_unserved_on_demand": 0.6000000000000001,
+    "expected_departures": 3.600000000000001,
+    "inventory": {
+      "8": {
+        "initial_deployed": 2.0,
+        "incoming_charged": 3.0,
+        "total_departures": 5.0,
+        "max_prefix_excess": 0.0
+      },
+      "4": {
+        "initial_deployed": 2.0,
+        "incoming_charged": 1.0,
+        "total_departures": 3.0,
+        "max_prefix_excess": 0.0
+      },
+      "5": {
+        "initial_deployed": 2.0,
+        "incoming_charged": 1.0,
+        "total_departures": 3.0,
+        "max_prefix_excess": 0.0
+      }
+    },
+    "objective_reconciliation_error": 1.1368683772161603e-13
+  },
+  {
+    "seed": 60,
+    "initial_fleet_cap": 4,
+    "initial_fleet_cost_per_aircraft": 500.0,
+    "status": "Optimal",
+    "solver_reported_gap": 0.0,
+    "objective": -783.8829032244307,
+    "variables": 1895,
+    "constraints": 1105,
+    "max_constraint_violation": 0.0,
+    "max_integrality_error": 0.0,
+    "max_bound_violation": 0.0,
+    "initial_fleet_allocated": 2,
+    "expected_initial_deployed": 2.0000000000000004,
+    "initial_allocation_cost": 1000.0,
+    "expected_unserved_booked": 0.7000000000000001,
+    "expected_unserved_on_demand": 0.6000000000000001,
+    "expected_departures": 3.600000000000001,
+    "inventory": {
+      "8": {
+        "initial_deployed": 2.0,
+        "incoming_charged": 3.0,
+        "total_departures": 5.0,
+        "max_prefix_excess": 0.0
+      },
+      "4": {
+        "initial_deployed": 2.0,
+        "incoming_charged": 1.0,
+        "total_departures": 3.0,
+        "max_prefix_excess": 0.0
+      },
+      "5": {
+        "initial_deployed": 2.0,
+        "incoming_charged": 1.0,
+        "total_departures": 3.0,
+        "max_prefix_excess": 0.0
+      }
+    },
+    "objective_reconciliation_error": 1.1368683772161603e-13
+  },
+  {
+    "seed": 60,
+    "initial_fleet_cap": 6,
+    "initial_fleet_cost_per_aircraft": 500.0,
+    "status": "Optimal",
+    "solver_reported_gap": 0.0,
+    "objective": -783.8829032244307,
+    "variables": 1895,
+    "constraints": 1105,
+    "max_constraint_violation": 0.0,
+    "max_integrality_error": 0.0,
+    "max_bound_violation": 0.0,
+    "initial_fleet_allocated": 2,
+    "expected_initial_deployed": 2.0000000000000004,
+    "initial_allocation_cost": 1000.0,
+    "expected_unserved_booked": 0.7000000000000001,
+    "expected_unserved_on_demand": 0.6000000000000001,
+    "expected_departures": 3.600000000000001,
+    "inventory": {
+      "8": {
+        "initial_deployed": 2.0,
+        "incoming_charged": 3.0,
+        "total_departures": 5.0,
+        "max_prefix_excess": 0.0
+      },
+      "4": {
+        "initial_deployed": 2.0,
+        "incoming_charged": 1.0,
+        "total_departures": 3.0,
+        "max_prefix_excess": 0.0
+      },
+      "5": {
+        "initial_deployed": 2.0,
+        "incoming_charged": 1.0,
+        "total_departures": 3.0,
+        "max_prefix_excess": 0.0
+      }
+    },
+    "objective_reconciliation_error": 1.1368683772161603e-13
+  },
+  {
+    "seed": 60,
+    "initial_fleet_cap": 0,
+    "initial_fleet_cost_per_aircraft": 600.0,
+    "status": "Optimal",
+    "solver_reported_gap": 0.0,
+    "objective": -1020.1538520165069,
+    "variables": 1895,
+    "constraints": 1105,
+    "max_constraint_violation": 0.0,
+    "max_integrality_error": 0.0,
+    "max_bound_violation": 0.0,
+    "initial_fleet_allocated": 0,
+    "expected_initial_deployed": 0.0,
+    "initial_allocation_cost": 0.0,
+    "expected_unserved_booked": 3.3000000000000007,
+    "expected_unserved_on_demand": 3.500000000000001,
+    "expected_departures": 1.6000000000000003,
+    "inventory": {
+      "8": {
+        "initial_deployed": 0.0,
+        "incoming_charged": 3.0,
+        "total_departures": 3.0,
+        "max_prefix_excess": 0.0
+      },
+      "4": {
+        "initial_deployed": 0.0,
+        "incoming_charged": 1.0,
+        "total_departures": 1.0,
+        "max_prefix_excess": 0.0
+      },
+      "5": {
+        "initial_deployed": 0.0,
+        "incoming_charged": 1.0,
+        "total_departures": 1.0,
+        "max_prefix_excess": 0.0
+      }
+    },
+    "objective_reconciliation_error": 1.1368683772161603e-13
+  },
+  {
+    "seed": 60,
+    "initial_fleet_cap": 1,
+    "initial_fleet_cost_per_aircraft": 600.0,
+    "status": "Optimal",
+    "solver_reported_gap": 0.0,
+    "objective": -890.035237250357,
+    "variables": 1895,
+    "constraints": 1105,
+    "max_constraint_violation": 3.3306690738754696e-16,
+    "max_integrality_error": 3.3306690738754696e-16,
+    "max_bound_violation": 0.0,
+    "initial_fleet_allocated": 1,
+    "expected_initial_deployed": 1.0000000000000002,
+    "initial_allocation_cost": 600.0,
+    "expected_unserved_booked": 1.7000000000000004,
+    "expected_unserved_on_demand": 1.8000000000000003,
+    "expected_departures": 2.6000000000000005,
+    "inventory": {
+      "8": {
+        "initial_deployed": 1.0,
+        "incoming_charged": 3.0,
+        "total_departures": 4.0,
+        "max_prefix_excess": 0.0
+      },
+      "4": {
+        "initial_deployed": 1.0,
+        "incoming_charged": 1.0,
+        "total_departures": 2.0,
+        "max_prefix_excess": 0.0
+      },
+      "5": {
+        "initial_deployed": 1.0,
+        "incoming_charged": 1.0,
+        "total_departures": 2.0,
+        "max_prefix_excess": 0.0
+      }
+    },
+    "objective_reconciliation_error": 0.0
+  },
+  {
+    "seed": 60,
+    "initial_fleet_cap": 2,
+    "initial_fleet_cost_per_aircraft": 600.0,
+    "status": "Optimal",
+    "solver_reported_gap": 0.0,
+    "objective": -890.035237250357,
+    "variables": 1895,
+    "constraints": 1105,
+    "max_constraint_violation": 0.0,
+    "max_integrality_error": 0.0,
+    "max_bound_violation": 0.0,
+    "initial_fleet_allocated": 1,
+    "expected_initial_deployed": 1.0000000000000002,
+    "initial_allocation_cost": 600.0,
+    "expected_unserved_booked": 1.7000000000000004,
+    "expected_unserved_on_demand": 1.8000000000000003,
+    "expected_departures": 2.6000000000000005,
+    "inventory": {
+      "8": {
+        "initial_deployed": 1.0,
+        "incoming_charged": 3.0,
+        "total_departures": 4.0,
+        "max_prefix_excess": 0.0
+      },
+      "4": {
+        "initial_deployed": 1.0,
+        "incoming_charged": 1.0,
+        "total_departures": 2.0,
+        "max_prefix_excess": 0.0
+      },
+      "5": {
+        "initial_deployed": 1.0,
+        "incoming_charged": 1.0,
+        "total_departures": 2.0,
+        "max_prefix_excess": 0.0
+      }
+    },
+    "objective_reconciliation_error": 1.1368683772161603e-13
+  },
+  {
+    "seed": 60,
+    "initial_fleet_cap": 3,
+    "initial_fleet_cost_per_aircraft": 600.0,
+    "status": "Optimal",
+    "solver_reported_gap": 0.0,
+    "objective": -890.035237250357,
+    "variables": 1895,
+    "constraints": 1105,
+    "max_constraint_violation": 0.0,
+    "max_integrality_error": 0.0,
+    "max_bound_violation": 0.0,
+    "initial_fleet_allocated": 1,
+    "expected_initial_deployed": 1.0000000000000002,
+    "initial_allocation_cost": 600.0,
+    "expected_unserved_booked": 1.7000000000000004,
+    "expected_unserved_on_demand": 1.8000000000000003,
+    "expected_departures": 2.6000000000000005,
+    "inventory": {
+      "8": {
+        "initial_deployed": 1.0,
+        "incoming_charged": 3.0,
+        "total_departures": 4.0,
+        "max_prefix_excess": 0.0
+      },
+      "4": {
+        "initial_deployed": 1.0,
+        "incoming_charged": 1.0,
+        "total_departures": 2.0,
+        "max_prefix_excess": 0.0
+      },
+      "5": {
+        "initial_deployed": 1.0,
+        "incoming_charged": 1.0,
+        "total_departures": 2.0,
+        "max_prefix_excess": 0.0
+      }
+    },
+    "objective_reconciliation_error": 1.1368683772161603e-13
+  },
+  {
+    "seed": 60,
+    "initial_fleet_cap": 4,
+    "initial_fleet_cost_per_aircraft": 600.0,
+    "status": "Optimal",
+    "solver_reported_gap": 0.0,
+    "objective": -890.035237250357,
+    "variables": 1895,
+    "constraints": 1105,
+    "max_constraint_violation": 5.551115123125783e-16,
+    "max_integrality_error": 5.551115123125783e-16,
+    "max_bound_violation": 0.0,
+    "initial_fleet_allocated": 1,
+    "expected_initial_deployed": 1.0000000000000002,
+    "initial_allocation_cost": 600.0,
+    "expected_unserved_booked": 1.7000000000000002,
+    "expected_unserved_on_demand": 1.8000000000000003,
+    "expected_departures": 2.6000000000000005,
+    "inventory": {
+      "8": {
+        "initial_deployed": 1.0,
+        "incoming_charged": 3.0,
+        "total_departures": 4.0,
+        "max_prefix_excess": 0.0
+      },
+      "4": {
+        "initial_deployed": 1.0,
+        "incoming_charged": 1.0,
+        "total_departures": 2.0,
+        "max_prefix_excess": 0.0
+      },
+      "5": {
+        "initial_deployed": 1.0,
+        "incoming_charged": 1.0,
+        "total_departures": 1.9999999999999998,
+        "max_prefix_excess": 0.0
+      }
+    },
+    "objective_reconciliation_error": 0.0
+  },
+  {
+    "seed": 60,
+    "initial_fleet_cap": 6,
+    "initial_fleet_cost_per_aircraft": 600.0,
+    "status": "Optimal",
+    "solver_reported_gap": 0.0,
+    "objective": -890.035237250357,
+    "variables": 1895,
+    "constraints": 1105,
+    "max_constraint_violation": 0.0,
+    "max_integrality_error": 0.0,
+    "max_bound_violation": 0.0,
+    "initial_fleet_allocated": 1,
+    "expected_initial_deployed": 1.0000000000000002,
+    "initial_allocation_cost": 600.0,
+    "expected_unserved_booked": 1.7000000000000004,
+    "expected_unserved_on_demand": 1.8000000000000003,
+    "expected_departures": 2.6000000000000005,
+    "inventory": {
+      "8": {
+        "initial_deployed": 1.0,
+        "incoming_charged": 3.0,
+        "total_departures": 4.0,
+        "max_prefix_excess": 0.0
+      },
+      "4": {
+        "initial_deployed": 1.0,
+        "incoming_charged": 1.0,
+        "total_departures": 2.0,
+        "max_prefix_excess": 0.0
+      },
+      "5": {
+        "initial_deployed": 1.0,
+        "incoming_charged": 1.0,
+        "total_departures": 2.0,
+        "max_prefix_excess": 0.0
+      }
+    },
+    "objective_reconciliation_error": 1.1368683772161603e-13
+  },
+  {
+    "seed": 60,
+    "initial_fleet_cap": 0,
+    "initial_fleet_cost_per_aircraft": 800.0,
+    "status": "Optimal",
+    "solver_reported_gap": 0.0,
+    "objective": -1020.1538520165069,
+    "variables": 1895,
+    "constraints": 1105,
+    "max_constraint_violation": 0.0,
+    "max_integrality_error": 0.0,
+    "max_bound_violation": 0.0,
+    "initial_fleet_allocated": 0,
+    "expected_initial_deployed": 0.0,
+    "initial_allocation_cost": 0.0,
+    "expected_unserved_booked": 3.3000000000000007,
+    "expected_unserved_on_demand": 3.500000000000001,
+    "expected_departures": 1.6000000000000003,
+    "inventory": {
+      "8": {
+        "initial_deployed": 0.0,
+        "incoming_charged": 3.0,
+        "total_departures": 3.0,
+        "max_prefix_excess": 0.0
+      },
+      "4": {
+        "initial_deployed": 0.0,
+        "incoming_charged": 1.0,
+        "total_departures": 1.0,
+        "max_prefix_excess": 0.0
+      },
+      "5": {
+        "initial_deployed": 0.0,
+        "incoming_charged": 1.0,
+        "total_departures": 1.0,
+        "max_prefix_excess": 0.0
+      }
+    },
+    "objective_reconciliation_error": 1.1368683772161603e-13
+  },
+  {
+    "seed": 60,
+    "initial_fleet_cap": 1,
+    "initial_fleet_cost_per_aircraft": 800.0,
+    "status": "Optimal",
+    "solver_reported_gap": 0.0,
+    "objective": -1020.1538520165069,
+    "variables": 1895,
+    "constraints": 1105,
+    "max_constraint_violation": 0.0,
+    "max_integrality_error": 0.0,
+    "max_bound_violation": 0.0,
+    "initial_fleet_allocated": 0,
+    "expected_initial_deployed": 0.0,
+    "initial_allocation_cost": 0.0,
+    "expected_unserved_booked": 3.3000000000000007,
+    "expected_unserved_on_demand": 3.500000000000001,
+    "expected_departures": 1.6000000000000003,
+    "inventory": {
+      "8": {
+        "initial_deployed": 0.0,
+        "incoming_charged": 3.0,
+        "total_departures": 3.0,
+        "max_prefix_excess": 0.0
+      },
+      "4": {
+        "initial_deployed": 0.0,
+        "incoming_charged": 1.0,
+        "total_departures": 1.0,
+        "max_prefix_excess": 0.0
+      },
+      "5": {
+        "initial_deployed": 0.0,
+        "incoming_charged": 1.0,
+        "total_departures": 1.0,
+        "max_prefix_excess": 0.0
+      }
+    },
+    "objective_reconciliation_error": 1.1368683772161603e-13
+  },
+  {
+    "seed": 60,
+    "initial_fleet_cap": 2,
+    "initial_fleet_cost_per_aircraft": 800.0,
+    "status": "Optimal",
+    "solver_reported_gap": 0.0,
+    "objective": -1020.1538520165069,
+    "variables": 1895,
+    "constraints": 1105,
+    "max_constraint_violation": 0.0,
+    "max_integrality_error": 0.0,
+    "max_bound_violation": 0.0,
+    "initial_fleet_allocated": 0,
+    "expected_initial_deployed": 0.0,
+    "initial_allocation_cost": 0.0,
+    "expected_unserved_booked": 3.3000000000000007,
+    "expected_unserved_on_demand": 3.500000000000001,
+    "expected_departures": 1.6000000000000003,
+    "inventory": {
+      "8": {
+        "initial_deployed": 0.0,
+        "incoming_charged": 3.0,
+        "total_departures": 3.0,
+        "max_prefix_excess": 0.0
+      },
+      "4": {
+        "initial_deployed": 0.0,
+        "incoming_charged": 1.0,
+        "total_departures": 1.0,
+        "max_prefix_excess": 0.0
+      },
+      "5": {
+        "initial_deployed": 0.0,
+        "incoming_charged": 1.0,
+        "total_departures": 1.0,
+        "max_prefix_excess": 0.0
+      }
+    },
+    "objective_reconciliation_error": 1.1368683772161603e-13
+  },
+  {
+    "seed": 60,
+    "initial_fleet_cap": 3,
+    "initial_fleet_cost_per_aircraft": 800.0,
+    "status": "Optimal",
+    "solver_reported_gap": 0.0,
+    "objective": -1020.1538520165069,
+    "variables": 1895,
+    "constraints": 1105,
+    "max_constraint_violation": 0.0,
+    "max_integrality_error": 0.0,
+    "max_bound_violation": 0.0,
+    "initial_fleet_allocated": 0,
+    "expected_initial_deployed": 0.0,
+    "initial_allocation_cost": 0.0,
+    "expected_unserved_booked": 3.3000000000000007,
+    "expected_unserved_on_demand": 3.500000000000001,
+    "expected_departures": 1.6000000000000003,
+    "inventory": {
+      "8": {
+        "initial_deployed": -0.0,
+        "incoming_charged": 3.0,
+        "total_departures": 3.0,
+        "max_prefix_excess": 0.0
+      },
+      "4": {
+        "initial_deployed": -0.0,
+        "incoming_charged": 1.0,
+        "total_departures": 1.0,
+        "max_prefix_excess": 0.0
+      },
+      "5": {
+        "initial_deployed": -0.0,
+        "incoming_charged": 1.0,
+        "total_departures": 1.0,
+        "max_prefix_excess": 0.0
+      }
+    },
+    "objective_reconciliation_error": 1.1368683772161603e-13
+  },
+  {
+    "seed": 60,
+    "initial_fleet_cap": 4,
+    "initial_fleet_cost_per_aircraft": 800.0,
+    "status": "Optimal",
+    "solver_reported_gap": 0.0,
+    "objective": -1020.1538520165069,
+    "variables": 1895,
+    "constraints": 1105,
+    "max_constraint_violation": 0.0,
+    "max_integrality_error": 0.0,
+    "max_bound_violation": 0.0,
+    "initial_fleet_allocated": 0,
+    "expected_initial_deployed": 0.0,
+    "initial_allocation_cost": 0.0,
+    "expected_unserved_booked": 3.3000000000000007,
+    "expected_unserved_on_demand": 3.500000000000001,
+    "expected_departures": 1.6000000000000003,
+    "inventory": {
+      "8": {
+        "initial_deployed": 0.0,
+        "incoming_charged": 3.0,
+        "total_departures": 3.0,
+        "max_prefix_excess": 0.0
+      },
+      "4": {
+        "initial_deployed": 0.0,
+        "incoming_charged": 1.0,
+        "total_departures": 1.0,
+        "max_prefix_excess": 0.0
+      },
+      "5": {
+        "initial_deployed": 0.0,
+        "incoming_charged": 1.0,
+        "total_departures": 1.0,
+        "max_prefix_excess": 0.0
+      }
+    },
+    "objective_reconciliation_error": 1.1368683772161603e-13
+  },
+  {
+    "seed": 60,
+    "initial_fleet_cap": 6,
+    "initial_fleet_cost_per_aircraft": 800.0,
+    "status": "Optimal",
+    "solver_reported_gap": 0.0,
+    "objective": -1020.1538520165069,
+    "variables": 1895,
+    "constraints": 1105,
+    "max_constraint_violation": 0.0,
+    "max_integrality_error": 0.0,
+    "max_bound_violation": 0.0,
+    "initial_fleet_allocated": 0,
+    "expected_initial_deployed": 0.0,
+    "initial_allocation_cost": 0.0,
+    "expected_unserved_booked": 3.3000000000000007,
+    "expected_unserved_on_demand": 3.500000000000001,
+    "expected_departures": 1.6000000000000003,
+    "inventory": {
+      "8": {
+        "initial_deployed": -0.0,
+        "incoming_charged": 3.0,
+        "total_departures": 3.0,
+        "max_prefix_excess": 0.0
+      },
+      "4": {
+        "initial_deployed": -0.0,
+        "incoming_charged": 1.0,
+        "total_departures": 1.0,
+        "max_prefix_excess": 0.0
+      },
+      "5": {
+        "initial_deployed": -0.0,
+        "incoming_charged": 1.0,
+        "total_departures": 1.0,
+        "max_prefix_excess": 0.0
+      }
+    },
+    "objective_reconciliation_error": 1.1368683772161603e-13
+  }
+]

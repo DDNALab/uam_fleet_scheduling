@@ -1,0 +1,9 @@
+{
+  "seed": 60,
+  "known_advance_bookings": 4,
+  "initial_fleet_allocated": 3,
+  "generated_scenarios": 30,
+  "reduced_scenarios": 3,
+  "status": "Optimal",
+  "objective": 359.817298865205
+}

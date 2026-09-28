@@ -1,0 +1,19 @@
+{
+  "demand_scope": "active-renormalized",
+  "requested_passengers": 20.0,
+  "expected_optimization_passengers": 20.0,
+  "configured_aircraft_passenger_ratio": 0.5,
+  "approximate_expected_incoming_aircraft": 10.0,
+  "advance_booking_fraction": 0.4,
+  "fixed_advance_bookings": 7,
+  "destinations": {
+    "Dallas CBD": 3.6074148216945443,
+    "Dallas Love Field Airport": 10.604764066355468,
+    "Arlington Municipal Airport": 5.787821111949986
+  },
+  "horizon_minutes": 240,
+  "period_minutes": 15,
+  "los_minutes": 30,
+  "census_shapefile": "C:\\Users\\yuj2\\OneDrive\\code\\coord_schedule_UAM\\data\\tl_2022_48_tract\\tl_2022_48_tract.shp",
+  "acs_json": "C:\\Users\\yuj2\\OneDrive\\code\\coord_schedule_UAM\\data\\acs_texas_2022_raw.json"
+}

@@ -1,0 +1,21 @@
+#on desktop
+cd 'C:\Users\yuj2\OneDrive - UT Arlington\code\airmobnet\src'
+
+#cd ../
+#python -m venv uam_net_opt
+
+cd ./src
+../uam_net_opt/Scripts/Activate
+python -m pip install --upgrade pip
+pip install pandas, matplotlib, scipy, seaborn, geopandas, geopy, gurobipy, openpyxl, folium,pickle
+
+
+# on laptop
+cd C:\Users\yuj2\OneDrive\code\airmobnet\src
+
+cd 'C:\Users\Jinzh\OneDrive - UT Arlington\code\airmobnet\src'
+
+../uam_net_opt/Scripts/Activate
+
+
+python uam_netopt.py
