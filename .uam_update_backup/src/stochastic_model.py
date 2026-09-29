@@ -39,7 +39,7 @@ def energy_price_per_kwh(hour, params):
 
 
 def charging_periods_required(soc, params):
-    """Configured-length periods needed to reach the departure SoC."""
+    """15-min periods needed to reach the required departure SoC."""
     deficit = max(0.0, params["soc_min"] - soc)
     if deficit <= 0:
         return 0
@@ -59,10 +59,6 @@ def _build_aircraft_groups(scenario, params):
         arrival = int(info["arrival_period"])
         duration = charging_periods_required(info["initial_soc"], params)
         energy = round(_energy_needed_kwh(info["initial_soc"], params), 6)
-        if duration == 0 and params.get("require_positive_incoming_duration", False):
-            raise ValueError("Incoming aircraft is already departure-ready; A4 requires "
-                             "positive-duration charging. Put it in the initial-ready "
-                             "fleet or use an explicit zero-duration extension.")
         counts[(arrival, duration, energy)] += 1
 
     groups = {}
@@ -119,7 +115,7 @@ def build_stochastic_model(model_input):
         for d in destinations:
             for k in _window(r, params["periods"], params["los_periods"]):
                 protected[r, d, k] = pulp.LpVariable(
-                    f"ProtectedBooking_{r}_{d}_{k}", lowBound=0, cat="Continuous"
+                    f"ProtectedBooking_{r}_{d}_{k}", lowBound=0, cat="Integer"
                 )
 
     # ------------------------- scenario data -----------------------
@@ -275,22 +271,6 @@ def add_constraints_and_objective(model_data):
             pulp.lpSum(n[d, t] for d in destinations) <= params["max_departures"]
         ), f"PlannedDepartureLimit_{t}"
 
-    # Optional common physical 60-minute throughput limit. This is used in
-    # discretization comparisons so 5/10/15-minute bins represent a consistent
-    # hourly throughput, with per-bin maxima retained separately.
-    hourly_cap = params.get("hourly_takeoff_limit")
-    if hourly_cap is not None:
-        bins_per_hour = 60 // params["bin_size"]
-        if bins_per_hour * params["bin_size"] != 60:
-            raise ValueError("hourly_takeoff_limit requires a bin dividing 60 minutes")
-        for block, t0 in enumerate(range(1, params["periods"] + 1, bins_per_hour)):
-            block_periods = [t for t in periods if t0 <= t < t0 + bins_per_hour]
-            cap = int(hourly_cap)
-            if len(block_periods) != bins_per_hour:
-                cap = math.floor(cap * len(block_periods) / bins_per_hour)
-            model += pulp.lpSum(n[d, t] for d in destinations
-                                for t in block_periods) <= cap, f"HourlyPlanned_{block}"
-
     for r in periods:
         for d in destinations:
             window = list(_window(r, params["periods"], params["los_periods"]))
@@ -364,16 +344,6 @@ def add_constraints_and_objective(model_data):
             completion[k] = pulp.lpSum(terms)
             departure_total[k] = pulp.lpSum(flights[sid, d, k] for d in destinations)
             model += departure_total[k] <= params["max_departures"], f"TakeoffCap_s{sid}_t{k}"
-
-        if hourly_cap is not None:
-            bins_per_hour = 60 // params["bin_size"]
-            for block, t0 in enumerate(range(1, params["periods"] + 1, bins_per_hour)):
-                block_periods = [t for t in periods if t0 <= t < t0 + bins_per_hour]
-                cap = int(hourly_cap)
-                if len(block_periods) != bins_per_hour:
-                    cap = math.floor(cap * len(block_periods) / bins_per_hour)
-                model += (pulp.lpSum(departure_total[k] for k in block_periods)
-                          <= cap), f"HourlyRealized_s{sid}_block{block}"
 
         for k in periods:
             model += (
@@ -575,13 +545,6 @@ def solve_model(
             if backend is not None and hasattr(backend, "getInfo"):
                 try:
                     candidate = float(backend.getInfo().mip_gap)
-                    if math.isfinite(candidate):
-                        raw_gap = candidate
-                except (AttributeError, RuntimeError, ValueError):
-                    pass
-            if raw_gap is None and backend is not None and hasattr(backend, "MIPGap"):
-                try:
-                    candidate = float(backend.MIPGap)
                     if math.isfinite(candidate):
                         raw_gap = candidate
                 except (AttributeError, RuntimeError, ValueError):

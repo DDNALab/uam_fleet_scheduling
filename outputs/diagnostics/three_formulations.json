@@ -1,0 +1,852 @@
+[
+  {
+    "case": "mixed_seed60",
+    "formulations": {
+      "detailed": {
+        "objective": 228.44000000000005,
+        "seconds": 0.09452909999527037,
+        "gap": 0.0,
+        "variables": 597,
+        "integer_variables": 576,
+        "constraints": 240,
+        "x0": 1
+      },
+      "group_flow": {
+        "objective": 228.44000000000005,
+        "seconds": 0.028913000016473234,
+        "gap": 0.0,
+        "variables": 251,
+        "integer_variables": 230,
+        "constraints": 182,
+        "x0": 1
+      },
+      "projected": {
+        "objective": 228.44000000000005,
+        "seconds": 0.024560199992265552,
+        "gap": 0.0,
+        "variables": 219,
+        "integer_variables": 191,
+        "constraints": 163,
+        "x0": 1
+      }
+    },
+    "independent_reconstruction": {
+      "case": "mixed_seed60",
+      "projected_objective": 228.44000000000005,
+      "detailed_objective": 228.44000000000005,
+      "first_stage_allocated": 1,
+      "same_objective": true,
+      "same_objective_after_fixing_first_stage": true,
+      "projected_audit": {
+        "rows": 0.0,
+        "integrality": 0.0,
+        "bound_error": 0.0,
+        "objective_reconciliation": 5.684341886080802e-14
+      },
+      "detailed_audit": {
+        "rows": 0.0,
+        "integrality": 0.0,
+        "bound_error": 0.0,
+        "objective_reconciliation": 5.684341886080802e-14
+      },
+      "initial_inventory": {
+        "initial_allocated": 1,
+        "scenarios": {
+          "0": {
+            "initial_deployed": 1,
+            "departures": 3.0,
+            "incoming_completions": 2.0,
+            "max_prefix_excess": 0.0
+          },
+          "1": {
+            "initial_deployed": 1,
+            "departures": 2.0,
+            "incoming_completions": 1.0,
+            "max_prefix_excess": 0.0
+          }
+        }
+      },
+      "integer_charging_and_passenger_recovery": {
+        "0": {
+          "charging_cost_projected": 4.95,
+          "charging_cost_recovered": 4.95,
+          "departures_recovered": 3,
+          "passengers_recovered": 8
+        },
+        "1": {
+          "charging_cost_projected": 2.475,
+          "charging_cost_recovered": 2.475,
+          "departures_recovered": 2,
+          "passengers_recovered": 7
+        }
+      },
+      "projected_solver_gap": 0.0,
+      "detailed_solver_gap": 0.0
+    }
+  },
+  {
+    "case": "shared_duration_seed60",
+    "formulations": {
+      "detailed": {
+        "objective": 229.43,
+        "seconds": 0.08278530000825413,
+        "gap": 0.0,
+        "variables": 690,
+        "integer_variables": 669,
+        "constraints": 268,
+        "x0": 1
+      },
+      "group_flow": {
+        "objective": 229.43,
+        "seconds": 0.0247590999933891,
+        "gap": 0.0,
+        "variables": 272,
+        "integer_variables": 251,
+        "constraints": 194,
+        "x0": 1
+      },
+      "projected": {
+        "objective": 229.43,
+        "seconds": 0.025530099985189736,
+        "gap": 0.0,
+        "variables": 224,
+        "integer_variables": 191,
+        "constraints": 165,
+        "x0": 1
+      }
+    },
+    "independent_reconstruction": {
+      "case": "shared_duration_seed60",
+      "projected_objective": 229.43,
+      "detailed_objective": 229.43,
+      "first_stage_allocated": 1,
+      "same_objective": true,
+      "same_objective_after_fixing_first_stage": true,
+      "projected_audit": {
+        "rows": 0.0,
+        "integrality": 0.0,
+        "bound_error": 0.0,
+        "objective_reconciliation": 0.0
+      },
+      "detailed_audit": {
+        "rows": 0.0,
+        "integrality": 0.0,
+        "bound_error": 0.0,
+        "objective_reconciliation": 0.0
+      },
+      "initial_inventory": {
+        "initial_allocated": 1,
+        "scenarios": {
+          "0": {
+            "initial_deployed": 1,
+            "departures": 3.0,
+            "incoming_completions": 2.0,
+            "max_prefix_excess": 0.0
+          },
+          "1": {
+            "initial_deployed": 1,
+            "departures": 2.0,
+            "incoming_completions": 1.0,
+            "max_prefix_excess": 0.0
+          }
+        }
+      },
+      "integer_charging_and_passenger_recovery": {
+        "0": {
+          "charging_cost_projected": 3.3,
+          "charging_cost_recovered": 3.3,
+          "departures_recovered": 3,
+          "passengers_recovered": 8
+        },
+        "1": {
+          "charging_cost_projected": 2.475,
+          "charging_cost_recovered": 2.475,
+          "departures_recovered": 2,
+          "passengers_recovered": 7
+        }
+      },
+      "projected_solver_gap": 0.0,
+      "detailed_solver_gap": 0.0
+    }
+  },
+  {
+    "case": "mixed_seed61",
+    "formulations": {
+      "detailed": {
+        "objective": 217.02000000000004,
+        "seconds": 0.039720900007523596,
+        "gap": 0.0,
+        "variables": 597,
+        "integer_variables": 576,
+        "constraints": 240,
+        "x0": 1
+      },
+      "group_flow": {
+        "objective": 217.02000000000004,
+        "seconds": 0.023205600009532645,
+        "gap": 0.0,
+        "variables": 251,
+        "integer_variables": 230,
+        "constraints": 182,
+        "x0": 1
+      },
+      "projected": {
+        "objective": 217.02000000000004,
+        "seconds": 0.018724099994869903,
+        "gap": 0.0,
+        "variables": 219,
+        "integer_variables": 191,
+        "constraints": 163,
+        "x0": 1
+      }
+    },
+    "independent_reconstruction": {
+      "case": "mixed_seed61",
+      "projected_objective": 217.02000000000004,
+      "detailed_objective": 217.02000000000004,
+      "first_stage_allocated": 1,
+      "same_objective": true,
+      "same_objective_after_fixing_first_stage": true,
+      "projected_audit": {
+        "rows": 0.0,
+        "integrality": 0.0,
+        "bound_error": 0.0,
+        "objective_reconciliation": 5.684341886080802e-14
+      },
+      "detailed_audit": {
+        "rows": 0.0,
+        "integrality": 0.0,
+        "bound_error": 0.0,
+        "objective_reconciliation": 5.684341886080802e-14
+      },
+      "initial_inventory": {
+        "initial_allocated": 1,
+        "scenarios": {
+          "0": {
+            "initial_deployed": 1,
+            "departures": 2.0,
+            "incoming_completions": 1.0,
+            "max_prefix_excess": 0.0
+          },
+          "1": {
+            "initial_deployed": 1,
+            "departures": 2.0,
+            "incoming_completions": 1.0,
+            "max_prefix_excess": 0.0
+          }
+        }
+      },
+      "integer_charging_and_passenger_recovery": {
+        "0": {
+          "charging_cost_projected": 1.65,
+          "charging_cost_recovered": 1.65,
+          "departures_recovered": 2,
+          "passengers_recovered": 7
+        },
+        "1": {
+          "charging_cost_projected": 2.475,
+          "charging_cost_recovered": 2.475,
+          "departures_recovered": 2,
+          "passengers_recovered": 7
+        }
+      },
+      "projected_solver_gap": 0.0,
+      "detailed_solver_gap": 0.0
+    }
+  },
+  {
+    "case": "shared_duration_seed61",
+    "formulations": {
+      "detailed": {
+        "objective": 217.01999999999998,
+        "seconds": 0.05439149998710491,
+        "gap": 0.0,
+        "variables": 690,
+        "integer_variables": 669,
+        "constraints": 268,
+        "x0": 1
+      },
+      "group_flow": {
+        "objective": 217.02000000000004,
+        "seconds": 0.02383579997695051,
+        "gap": 0.0,
+        "variables": 272,
+        "integer_variables": 251,
+        "constraints": 194,
+        "x0": 1
+      },
+      "projected": {
+        "objective": 217.02000000000004,
+        "seconds": 0.030305699998280033,
+        "gap": 0.0,
+        "variables": 224,
+        "integer_variables": 191,
+        "constraints": 165,
+        "x0": 1
+      }
+    },
+    "independent_reconstruction": {
+      "case": "shared_duration_seed61",
+      "projected_objective": 217.02000000000004,
+      "detailed_objective": 217.01999999999998,
+      "first_stage_allocated": 1,
+      "same_objective": true,
+      "same_objective_after_fixing_first_stage": true,
+      "projected_audit": {
+        "rows": 0.0,
+        "integrality": 0.0,
+        "bound_error": 0.0,
+        "objective_reconciliation": 5.684341886080802e-14
+      },
+      "detailed_audit": {
+        "rows": 0.0,
+        "integrality": 0.0,
+        "bound_error": 0.0,
+        "objective_reconciliation": 0.0
+      },
+      "initial_inventory": {
+        "initial_allocated": 1,
+        "scenarios": {
+          "0": {
+            "initial_deployed": 1,
+            "departures": 2.0,
+            "incoming_completions": 1.0,
+            "max_prefix_excess": 0.0
+          },
+          "1": {
+            "initial_deployed": 1,
+            "departures": 2.0,
+            "incoming_completions": 1.0,
+            "max_prefix_excess": 0.0
+          }
+        }
+      },
+      "integer_charging_and_passenger_recovery": {
+        "0": {
+          "charging_cost_projected": 1.65,
+          "charging_cost_recovered": 1.65,
+          "departures_recovered": 2,
+          "passengers_recovered": 7
+        },
+        "1": {
+          "charging_cost_projected": 2.475,
+          "charging_cost_recovered": 2.475,
+          "departures_recovered": 2,
+          "passengers_recovered": 7
+        }
+      },
+      "projected_solver_gap": 0.0,
+      "detailed_solver_gap": 0.0
+    }
+  },
+  {
+    "case": "mixed_seed62",
+    "formulations": {
+      "detailed": {
+        "objective": 217.02000000000004,
+        "seconds": 0.03900289998273365,
+        "gap": 0.0,
+        "variables": 597,
+        "integer_variables": 576,
+        "constraints": 240,
+        "x0": 1
+      },
+      "group_flow": {
+        "objective": 217.02000000000004,
+        "seconds": 0.02350559999467805,
+        "gap": 0.0,
+        "variables": 251,
+        "integer_variables": 230,
+        "constraints": 182,
+        "x0": 1
+      },
+      "projected": {
+        "objective": 217.02000000000004,
+        "seconds": 0.018312200001673773,
+        "gap": 0.0,
+        "variables": 219,
+        "integer_variables": 191,
+        "constraints": 163,
+        "x0": 1
+      }
+    },
+    "independent_reconstruction": {
+      "case": "mixed_seed62",
+      "projected_objective": 217.02000000000004,
+      "detailed_objective": 217.02000000000004,
+      "first_stage_allocated": 1,
+      "same_objective": true,
+      "same_objective_after_fixing_first_stage": true,
+      "projected_audit": {
+        "rows": 0.0,
+        "integrality": 0.0,
+        "bound_error": 0.0,
+        "objective_reconciliation": 5.684341886080802e-14
+      },
+      "detailed_audit": {
+        "rows": 0.0,
+        "integrality": 0.0,
+        "bound_error": 0.0,
+        "objective_reconciliation": 5.684341886080802e-14
+      },
+      "initial_inventory": {
+        "initial_allocated": 1,
+        "scenarios": {
+          "0": {
+            "initial_deployed": 1,
+            "departures": 2.0,
+            "incoming_completions": 1.0,
+            "max_prefix_excess": 0.0
+          },
+          "1": {
+            "initial_deployed": 1,
+            "departures": 2.0,
+            "incoming_completions": 1.0,
+            "max_prefix_excess": 0.0
+          }
+        }
+      },
+      "integer_charging_and_passenger_recovery": {
+        "0": {
+          "charging_cost_projected": 1.65,
+          "charging_cost_recovered": 1.65,
+          "departures_recovered": 2,
+          "passengers_recovered": 7
+        },
+        "1": {
+          "charging_cost_projected": 2.475,
+          "charging_cost_recovered": 2.475,
+          "departures_recovered": 2,
+          "passengers_recovered": 7
+        }
+      },
+      "projected_solver_gap": 0.0,
+      "detailed_solver_gap": 0.0
+    }
+  },
+  {
+    "case": "shared_duration_seed62",
+    "formulations": {
+      "detailed": {
+        "objective": 217.01999999999998,
+        "seconds": 0.05422109999926761,
+        "gap": 0.0,
+        "variables": 690,
+        "integer_variables": 669,
+        "constraints": 268,
+        "x0": 1
+      },
+      "group_flow": {
+        "objective": 217.02000000000004,
+        "seconds": 0.024039800016907975,
+        "gap": 0.0,
+        "variables": 272,
+        "integer_variables": 251,
+        "constraints": 194,
+        "x0": 1
+      },
+      "projected": {
+        "objective": 217.02000000000004,
+        "seconds": 0.02990180000779219,
+        "gap": 0.0,
+        "variables": 224,
+        "integer_variables": 191,
+        "constraints": 165,
+        "x0": 1
+      }
+    },
+    "independent_reconstruction": {
+      "case": "shared_duration_seed62",
+      "projected_objective": 217.02000000000004,
+      "detailed_objective": 217.01999999999998,
+      "first_stage_allocated": 1,
+      "same_objective": true,
+      "same_objective_after_fixing_first_stage": true,
+      "projected_audit": {
+        "rows": 0.0,
+        "integrality": 0.0,
+        "bound_error": 0.0,
+        "objective_reconciliation": 5.684341886080802e-14
+      },
+      "detailed_audit": {
+        "rows": 0.0,
+        "integrality": 0.0,
+        "bound_error": 0.0,
+        "objective_reconciliation": 0.0
+      },
+      "initial_inventory": {
+        "initial_allocated": 1,
+        "scenarios": {
+          "0": {
+            "initial_deployed": 1,
+            "departures": 2.0,
+            "incoming_completions": 1.0,
+            "max_prefix_excess": 0.0
+          },
+          "1": {
+            "initial_deployed": 1,
+            "departures": 2.0,
+            "incoming_completions": 1.0,
+            "max_prefix_excess": 0.0
+          }
+        }
+      },
+      "integer_charging_and_passenger_recovery": {
+        "0": {
+          "charging_cost_projected": 1.65,
+          "charging_cost_recovered": 1.65,
+          "departures_recovered": 2,
+          "passengers_recovered": 7
+        },
+        "1": {
+          "charging_cost_projected": 2.475,
+          "charging_cost_recovered": 2.475,
+          "departures_recovered": 2,
+          "passengers_recovered": 7
+        }
+      },
+      "projected_solver_gap": 0.0,
+      "detailed_solver_gap": 0.0
+    }
+  },
+  {
+    "case": "mixed_seed63",
+    "formulations": {
+      "detailed": {
+        "objective": 245.23999999999992,
+        "seconds": 0.05138049999368377,
+        "gap": 0.0,
+        "variables": 597,
+        "integer_variables": 576,
+        "constraints": 240,
+        "x0": 1
+      },
+      "group_flow": {
+        "objective": 245.24000000000007,
+        "seconds": 0.027060899999924004,
+        "gap": 0.0,
+        "variables": 251,
+        "integer_variables": 230,
+        "constraints": 182,
+        "x0": 1
+      },
+      "projected": {
+        "objective": 245.24000000000007,
+        "seconds": 0.036748800019267946,
+        "gap": 0.0,
+        "variables": 219,
+        "integer_variables": 191,
+        "constraints": 163,
+        "x0": 1
+      }
+    },
+    "independent_reconstruction": {
+      "case": "mixed_seed63",
+      "projected_objective": 245.24000000000007,
+      "detailed_objective": 245.23999999999992,
+      "first_stage_allocated": 1,
+      "same_objective": true,
+      "same_objective_after_fixing_first_stage": true,
+      "projected_audit": {
+        "rows": 0.0,
+        "integrality": 0.0,
+        "bound_error": 0.0,
+        "objective_reconciliation": 5.684341886080802e-14
+      },
+      "detailed_audit": {
+        "rows": 2.6645352591003757e-15,
+        "integrality": 3.2566542055671257e-15,
+        "bound_error": 3.2566542055671257e-15,
+        "objective_reconciliation": 0.0
+      },
+      "initial_inventory": {
+        "initial_allocated": 1,
+        "scenarios": {
+          "0": {
+            "initial_deployed": 1,
+            "departures": 3.0,
+            "incoming_completions": 2.0,
+            "max_prefix_excess": 0.0
+          },
+          "1": {
+            "initial_deployed": 1,
+            "departures": 2.0,
+            "incoming_completions": 1.0,
+            "max_prefix_excess": 0.0
+          }
+        }
+      },
+      "integer_charging_and_passenger_recovery": {
+        "0": {
+          "charging_cost_projected": 4.95,
+          "charging_cost_recovered": 4.95,
+          "departures_recovered": 3,
+          "passengers_recovered": 8
+        },
+        "1": {
+          "charging_cost_projected": 2.475,
+          "charging_cost_recovered": 2.475,
+          "departures_recovered": 2,
+          "passengers_recovered": 8
+        }
+      },
+      "projected_solver_gap": 0.0,
+      "detailed_solver_gap": 0.0
+    }
+  },
+  {
+    "case": "shared_duration_seed63",
+    "formulations": {
+      "detailed": {
+        "objective": 246.23000000000002,
+        "seconds": 0.07146259999717586,
+        "gap": 0.0,
+        "variables": 690,
+        "integer_variables": 669,
+        "constraints": 268,
+        "x0": 1
+      },
+      "group_flow": {
+        "objective": 246.23000000000002,
+        "seconds": 0.026266300003044307,
+        "gap": 0.0,
+        "variables": 272,
+        "integer_variables": 251,
+        "constraints": 194,
+        "x0": 1
+      },
+      "projected": {
+        "objective": 246.23000000000002,
+        "seconds": 0.026288599998224527,
+        "gap": 0.0,
+        "variables": 224,
+        "integer_variables": 191,
+        "constraints": 165,
+        "x0": 1
+      }
+    },
+    "independent_reconstruction": {
+      "case": "shared_duration_seed63",
+      "projected_objective": 246.23000000000002,
+      "detailed_objective": 246.23000000000002,
+      "first_stage_allocated": 1,
+      "same_objective": true,
+      "same_objective_after_fixing_first_stage": true,
+      "projected_audit": {
+        "rows": 0.0,
+        "integrality": 0.0,
+        "bound_error": 0.0,
+        "objective_reconciliation": 0.0
+      },
+      "detailed_audit": {
+        "rows": 0.0,
+        "integrality": 0.0,
+        "bound_error": 0.0,
+        "objective_reconciliation": 0.0
+      },
+      "initial_inventory": {
+        "initial_allocated": 1,
+        "scenarios": {
+          "0": {
+            "initial_deployed": 1,
+            "departures": 3.0,
+            "incoming_completions": 2.0,
+            "max_prefix_excess": 0.0
+          },
+          "1": {
+            "initial_deployed": 1,
+            "departures": 2.0,
+            "incoming_completions": 1.0,
+            "max_prefix_excess": 0.0
+          }
+        }
+      },
+      "integer_charging_and_passenger_recovery": {
+        "0": {
+          "charging_cost_projected": 3.3,
+          "charging_cost_recovered": 3.3,
+          "departures_recovered": 3,
+          "passengers_recovered": 8
+        },
+        "1": {
+          "charging_cost_projected": 2.475,
+          "charging_cost_recovered": 2.475,
+          "departures_recovered": 2,
+          "passengers_recovered": 8
+        }
+      },
+      "projected_solver_gap": 0.0,
+      "detailed_solver_gap": 0.0
+    }
+  },
+  {
+    "case": "mixed_seed64",
+    "formulations": {
+      "detailed": {
+        "objective": 233.82000000000005,
+        "seconds": 0.04637899997760542,
+        "gap": 0.0,
+        "variables": 597,
+        "integer_variables": 576,
+        "constraints": 240,
+        "x0": 1
+      },
+      "group_flow": {
+        "objective": 233.82000000000005,
+        "seconds": 0.02377960001467727,
+        "gap": 0.0,
+        "variables": 251,
+        "integer_variables": 230,
+        "constraints": 182,
+        "x0": 1
+      },
+      "projected": {
+        "objective": 233.82000000000005,
+        "seconds": 0.01891700000851415,
+        "gap": 0.0,
+        "variables": 219,
+        "integer_variables": 191,
+        "constraints": 163,
+        "x0": 1
+      }
+    },
+    "independent_reconstruction": {
+      "case": "mixed_seed64",
+      "projected_objective": 233.82000000000005,
+      "detailed_objective": 233.82000000000005,
+      "first_stage_allocated": 1,
+      "same_objective": true,
+      "same_objective_after_fixing_first_stage": true,
+      "projected_audit": {
+        "rows": 0.0,
+        "integrality": 0.0,
+        "bound_error": 0.0,
+        "objective_reconciliation": 5.684341886080802e-14
+      },
+      "detailed_audit": {
+        "rows": 0.0,
+        "integrality": 0.0,
+        "bound_error": 0.0,
+        "objective_reconciliation": 5.684341886080802e-14
+      },
+      "initial_inventory": {
+        "initial_allocated": 1,
+        "scenarios": {
+          "0": {
+            "initial_deployed": 1,
+            "departures": 2.0,
+            "incoming_completions": 1.0,
+            "max_prefix_excess": 0.0
+          },
+          "1": {
+            "initial_deployed": 1,
+            "departures": 2.0,
+            "incoming_completions": 1.0,
+            "max_prefix_excess": 0.0
+          }
+        }
+      },
+      "integer_charging_and_passenger_recovery": {
+        "0": {
+          "charging_cost_projected": 1.65,
+          "charging_cost_recovered": 1.65,
+          "departures_recovered": 2,
+          "passengers_recovered": 7
+        },
+        "1": {
+          "charging_cost_projected": 2.475,
+          "charging_cost_recovered": 2.475,
+          "departures_recovered": 2,
+          "passengers_recovered": 8
+        }
+      },
+      "projected_solver_gap": 0.0,
+      "detailed_solver_gap": 0.0
+    }
+  },
+  {
+    "case": "shared_duration_seed64",
+    "formulations": {
+      "detailed": {
+        "objective": 233.82000000000005,
+        "seconds": 0.057631899981061,
+        "gap": 0.0,
+        "variables": 690,
+        "integer_variables": 669,
+        "constraints": 268,
+        "x0": 1
+      },
+      "group_flow": {
+        "objective": 233.82000000000005,
+        "seconds": 0.02441660000476986,
+        "gap": 0.0,
+        "variables": 272,
+        "integer_variables": 251,
+        "constraints": 194,
+        "x0": 1
+      },
+      "projected": {
+        "objective": 233.82000000000005,
+        "seconds": 0.022785899986047298,
+        "gap": 0.0,
+        "variables": 224,
+        "integer_variables": 191,
+        "constraints": 165,
+        "x0": 1
+      }
+    },
+    "independent_reconstruction": {
+      "case": "shared_duration_seed64",
+      "projected_objective": 233.82000000000005,
+      "detailed_objective": 233.82000000000005,
+      "first_stage_allocated": 1,
+      "same_objective": true,
+      "same_objective_after_fixing_first_stage": true,
+      "projected_audit": {
+        "rows": 0.0,
+        "integrality": 0.0,
+        "bound_error": 0.0,
+        "objective_reconciliation": 5.684341886080802e-14
+      },
+      "detailed_audit": {
+        "rows": 0.0,
+        "integrality": 0.0,
+        "bound_error": 0.0,
+        "objective_reconciliation": 5.684341886080802e-14
+      },
+      "initial_inventory": {
+        "initial_allocated": 1,
+        "scenarios": {
+          "0": {
+            "initial_deployed": 1,
+            "departures": 2.0,
+            "incoming_completions": 1.0,
+            "max_prefix_excess": 0.0
+          },
+          "1": {
+            "initial_deployed": 1,
+            "departures": 2.0,
+            "incoming_completions": 1.0,
+            "max_prefix_excess": 0.0
+          }
+        }
+      },
+      "integer_charging_and_passenger_recovery": {
+        "0": {
+          "charging_cost_projected": 1.65,
+          "charging_cost_recovered": 1.65,
+          "departures_recovered": 2,
+          "passengers_recovered": 7
+        },
+        "1": {
+          "charging_cost_projected": 2.475,
+          "charging_cost_recovered": 2.475,
+          "departures_recovered": 2,
+          "passengers_recovered": 8
+        }
+      },
+      "projected_solver_gap": 0.0,
+      "detailed_solver_gap": 0.0
+    }
+  }
+]

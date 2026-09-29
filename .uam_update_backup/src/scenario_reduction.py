@@ -35,16 +35,12 @@ from .config import (
 )
 
 
-def charging_periods_required(soc: float, *, scenario=None) -> int:
-    """Compute p_js using the SAME physical parameters as the MILP input."""
-    required = getattr(scenario, "soc_required", SOC_REQUIRED)
-    capacity = getattr(scenario, "battery_capacity", BATTERY_CAPACITY)
-    power = getattr(scenario, "charging_rate", CHARGING_RATE)
-    bins = getattr(scenario, "bin_size", BIN_SIZE)
-    if soc >= required:
+def charging_periods_required(soc: float) -> int:
+    """Charging periods for one incoming aircraft; consistent with p_js."""
+    if soc >= SOC_REQUIRED:
         return 0
-    energy_kwh = capacity * (required - float(soc)) / 100.0
-    return int(math.ceil(energy_kwh * 60.0 / (power * bins)))
+    energy_kwh = BATTERY_CAPACITY * (SOC_REQUIRED - float(soc)) / 100.0
+    return int(math.ceil(energy_kwh * 60.0 / (CHARGING_RATE * BIN_SIZE)))
 
 
 def calculate_stress_score(scenario) -> float:
@@ -56,8 +52,7 @@ def calculate_stress_score(scenario) -> float:
     total_demand = sum(scenario.passenger_demand.values())
     incoming = len(scenario.aircraft)
     workload = sum(
-        charging_periods_required(a.initial_soc, scenario=scenario)
-        for a in scenario.aircraft
+        charging_periods_required(a.initial_soc) for a in scenario.aircraft
     )
     return float(
         STRESS_WEIGHT_PASSENGER * total_demand
@@ -95,8 +90,7 @@ def build_feature_vectors(scenarios):
         workload = np.zeros(n_periods, dtype=float)
         for aircraft in scenario.aircraft:  # stochastic INCOMING aircraft only
             period_index = int(
-                (aircraft.arrival_time - getattr(scenario, "horizon_start", HORIZON_START))
-                // getattr(scenario, "bin_size", BIN_SIZE)
+                (aircraft.arrival_time - HORIZON_START) // BIN_SIZE
             )
             if not 0 <= period_index < n_periods:
                 raise ValueError(
@@ -104,7 +98,7 @@ def build_feature_vectors(scenarios):
                 )
             arrivals[period_index] += 1
             workload[period_index] += charging_periods_required(
-                aircraft.initial_soc, scenario=scenario
+                aircraft.initial_soc
             )
         features.extend(arrivals)
         features.extend(workload)

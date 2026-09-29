@@ -22,7 +22,7 @@ def booking_only_planning_input(model_input):
 
 
 def extract_first_stage_solution(model_data):
-    """Extract all genuine first-stage decisions (x0, n, b); q is a certificate."""
+    """Extract solved integer n[d,t] and b[t] values from a model-data object."""
     variables = model_data["variables"]
     periods = model_data["periods"]
     destinations = model_data["destinations"]
@@ -40,7 +40,7 @@ def extract_first_stage_solution(model_data):
 
 
 def fix_first_stage_decisions(model_data, first_stage):
-    """Fix x0, n, and b; booking protection can be reoptimized as a certificate."""
+    """Fix n and b to a previously solved policy for full-demand/OOS evaluation."""
     model = model_data["model"]
     variables = model_data["variables"]
     periods = model_data["periods"]
@@ -91,20 +91,3 @@ def solve_booking_only_benchmark(model_input, solver="auto", **solve_kwargs):
         "evaluation_data": evaluation_data,
         "evaluation_result": evaluation_result,
     }
-
-
-def policy_value_measures(mean_net_by_policy):
-    """Paired expected-payoff contrasts in the manuscript's maximization convention.
-
-    Supply OOS mean NET payoffs under identical true scenarios and the same
-    risk-neutral *evaluation objective*: rn, bo, ev, ws. Only return contrasts
-    when their named policies have actually been evaluated; do not invent WS.
-    """
-    z = mean_net_by_policy
-    result = {}
-    for metric, high, low in (("VSS", "rn", "ev"),
-                              ("EVPI", "ws", "rn"),
-                              ("VOP", "rn", "bo")):
-        if high in z and low in z:
-            result[metric] = float(z[high]) - float(z[low])
-    return result

@@ -43,7 +43,7 @@ from src.policy_benchmarks import (
 from src.stochastic_model import build_stochastic_model, add_constraints_and_objective, solve_model
 from src.diagnostics.fleet_sensitivity import check_rows_and_integrality, check_inventory
 
-POLICIES = ("rn", "cvar", "bo", "ev", "ws")
+POLICIES = ("rn", "cvar", "bo", "ev")
 FIELDS = [
     "policy", "test_index", "test_scenario_id", "status", "gap", "solve_seconds",
     "booked_demand", "on_demand_demand", "unserved_booked", "unserved_on_demand",
@@ -64,8 +64,10 @@ def _v(expr):
 def _certified(res, gap_target, solver):
     if res["status"] != "Optimal" or res.get("objective") is None:
         return False
-    gap = res.get("solver_reported_gap")
-    return gap is not None and math.isfinite(gap) and gap <= gap_target + 1e-7
+    if solver == "highs":
+        gap = res.get("solver_reported_gap")
+        return gap is not None and math.isfinite(gap) and gap <= gap_target + 1e-7
+    return True  # Other solver's own Optimal status; log its available gap.
 
 
 def _stage1_json(stage):
@@ -136,12 +138,6 @@ def _mean_scenario(raw_scenarios, bookings, profile):
 
 def train_policy(policy, full_mi, raw_scenarios, profile, args):
     planning_mi = copy.deepcopy(full_mi)
-    if policy == "ws":
-        return {"name": "ws", "first_stage": None,
-                "training_status": "wait-and-see", "training_gap": None,
-                "training_objective": None, "training_seconds": 0.0,
-                "training_zeta": None, "number_train_variables": None,
-                "number_train_constraints": None}
     if policy in ("rn", "bo", "ev"):
         planning_mi["parameters"]["cvar"]["weight"] = 0.0
     if policy == "bo":
@@ -189,10 +185,8 @@ def eval_policy_one(policy, trained, scenario, index, params, args):
         params["cvar"]["weight"] if policy == "cvar" else 0.0)
     md = build_stochastic_model(mi)
     model = add_constraints_and_objective(md)
-    stage = (None if policy == "ws"
-             else _stage1_restore(trained["first_stage"]))
-    if stage is not None:
-        fix_first_stage_decisions(md, stage)
+    stage = _stage1_restore(trained["first_stage"])
+    fix_first_stage_decisions(md, stage)
     if policy == "cvar":
         if trained["training_zeta"] is None:
             raise RuntimeError("Risk-averse training policy missing zeta")
@@ -202,8 +196,7 @@ def eval_policy_one(policy, trained, scenario, index, params, args):
            "test_scenario_id": scenario.id,
            "booked_demand": sum(scenario.advance_bookings.values()),
            "on_demand_demand": sum(scenario.on_demand_demand.values()),
-           "fixed_stage1_cost": (_fixed_stage1_cost(stage, mi["parameters"])
-                                  if stage is not None else None)}
+           "fixed_stage1_cost": _fixed_stage1_cost(stage, mi["parameters"])}
     start = time.perf_counter()
     try:
         res = solve_model(model, solver=args.solver, gap_rel=args.eval_gap,
@@ -222,9 +215,6 @@ def eval_policy_one(policy, trained, scenario, index, params, args):
         v = md["variables"]
         sid = scenario.id
         periods, destinations = md["periods"], md["destinations"]
-        if policy == "ws":
-            realized_stage = extract_first_stage_solution(md)
-            row["fixed_stage1_cost"] = _fixed_stage1_cost(realized_stage, mi["parameters"])
         row["initial_deployed"] = _v(v["deployed_initial"][sid])
         row["unserved_booked"] = sum(_v(v["unserved_booked"][sid,r,d]) for r in periods for d in destinations)
         row["unserved_on_demand"] = sum(_v(v["unserved_on_demand"][sid,r,d]) for r in periods for d in destinations)
@@ -301,12 +291,9 @@ def summarize(rows, trained, manifest):
         od = sum(float(v["on_demand_demand"]) for v in sample)
         summaries[p] = {
             "n_complete_paired": len(sample),
-            "allocated_initial_aircraft": (trained[p]["first_stage"]["x0"]
-                                           if trained[p]["first_stage"] else None),
-            "planned_departures": (sum(item[2] for item in trained[p]["first_stage"]["n"])
-                                   if trained[p]["first_stage"] else None),
-            "reserved_charger_periods": (sum(item[1] for item in trained[p]["first_stage"]["b"])
-                                         if trained[p]["first_stage"] else None),
+            "allocated_initial_aircraft": trained[p]["first_stage"]["x0"],
+            "planned_departures": sum(item[2] for item in trained[p]["first_stage"]["n"]),
+            "reserved_charger_periods": sum(item[1] for item in trained[p]["first_stage"]["b"]),
             "mean_cash_profit_excluding_unserved_penalties": _mean(sample,"cash_profit_before_unserved_penalties"),
             "mean_net_payoff_including_unserved_penalties": _mean(sample,"net_payoff_after_penalties"),
             "mean_unserved_booked": _mean(sample,"unserved_booked"),
@@ -331,13 +318,7 @@ def summarize(rows, trained, manifest):
         a={i:good[p,i] for i in common};b={i:good["rn",i] for i in common}
         contrasts[f"{p}_minus_rn_net_payoff"] = _bootstrap_paired(a,b,"net_payoff_after_penalties")
         contrasts[f"{p}_minus_rn_unserved_booked"] = _bootstrap_paired(a,b,"unserved_booked")
-    from src.policy_benchmarks import policy_value_measures
-    information_values = policy_value_measures({
-        p: summaries[p]["mean_net_payoff_including_unserved_penalties"]
-        for p in summaries if "mean_net_payoff_including_unserved_penalties" in summaries[p]
-    })
     return {
-        "information_values": information_values,
         "n_common_completed":len(common), "n_requested": manifest["test_scenarios"],
         "warning": ("Fewer than 50 paired evaluation scenarios; tail CVaR is descriptive only"
                     if len(common)<50 else None),
@@ -437,8 +418,7 @@ def main():
         print("TRAIN",p,flush=True)
         trained[p]=train_policy(p,full_mi,raw,profile,args)
         training_path.write_text(json.dumps(trained,indent=2),encoding="utf-8")
-        print("  x0", (trained[p]["first_stage"]["x0"]
-                        if trained[p]["first_stage"] else "scenario-specific"),
+        print("  x0",trained[p]["first_stage"]["x0"],
               "gap",trained[p]["training_gap"],flush=True)
 
     print("Generating INDEPENDENT test scenarios...",flush=True)
@@ -485,7 +465,6 @@ def main():
     summary=summarize(list(rows_by_key.values()),trained,manifest)
     summary_path.write_text(json.dumps(summary,indent=2),encoding="utf-8")
     print("\nPAIRED COMPLETED",summary["n_common_completed"],"/",args.test_scenarios)
-    print("POLICY VALUE CONTRASTS", summary["information_values"])
     for p,res in summary["policies"].items():
         print(p,json.dumps(res,indent=2))
     print("Saved:",training_path,rows_path,summary_path,sep="\n  ")

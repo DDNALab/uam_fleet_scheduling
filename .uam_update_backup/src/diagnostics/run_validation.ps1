@@ -22,9 +22,6 @@ if ($LASTEXITCODE -ne 0) { throw 'Census/ACS path and loading check failed' }
 python -m pytest -q .\src\tests
 if ($LASTEXITCODE -ne 0) { throw 'Unit tests failed' }
 
-python -m src.tests.validate_revision --solver highs
-if ($LASTEXITCODE -ne 0) { throw 'Revised three-formulation validation failed' }
-
 $NextSeed = $Seed + 1
 python -m src.tests.validate_initial_fleet --solver highs --gap 1e-7 --time-limit 120 --seeds $Seed $NextSeed
 if ($LASTEXITCODE -ne 0) { throw 'Detailed/projected validation failed' }

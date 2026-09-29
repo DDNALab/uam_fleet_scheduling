@@ -176,44 +176,6 @@ STRESS_WEIGHT_PASSENGER = 1.0
 STRESS_WEIGHT_AIRCRAFT = 1.0
 STRESS_WEIGHT_CHARGING = 0.05
 
-
-# Explicit manuscript profile: NEVER substitute the small development defaults
-# for the paper's 14-hour, 2000-passenger, 35-charger, 17/15-minute case.
-# Initial-ready fleet cap/cost and any cost parameters remain experimental.
-PAPER_BASE = {
-    "horizon_start": 480,
-    "horizon_minutes": 14 * 60,
-    "passengers": 2000,
-    "booking_fraction": 0.40,
-    "aircraft_passenger_ratio": 0.30,
-    "charging_facilities": 35,
-    "takeoffs_per_hour": 68,
-    "bin_size": 15,
-    "loss_window_minutes": 30,
-    "require_positive_incoming_duration": True,
-}
-
-
-def paper_grid(bin_size, *, charging_power=None, hourly_takeoffs=68):
-    """Consistent 5/10/15-min paper profile; do not mutate module globals."""
-    if bin_size not in (5, 10, 15) or 60 % bin_size or 30 % bin_size:
-        raise ValueError("Choose 5, 10, or 15 minute bins")
-    import math
-    return {
-        "bin_size": bin_size,
-        "periods": PAPER_BASE["horizon_minutes"] // bin_size,
-        "horizon_start": PAPER_BASE["horizon_start"],
-        "horizon_end": PAPER_BASE["horizon_start"] + PAPER_BASE["horizon_minutes"],
-        "los_periods": PAPER_BASE["loss_window_minutes"] // bin_size,
-        "charging_rate": CHARGING_RATE if charging_power is None else charging_power,
-        "charging_facilities": PAPER_BASE["charging_facilities"],
-        "hourly_takeoff_limit": hourly_takeoffs,
-        # Per-bin limit approximates the same physical maximum; the added
-        # hourly constraint caps the small rounding differences across bins.
-        "max_departures": math.ceil(hourly_takeoffs * bin_size / 60),
-        "require_positive_incoming_duration": True,
-    }
-
 # Census / ACS
 CENSUS_YEAR = "2022"
 BBOX = {"min_lon": -97.60, "min_lat": 32.30, "max_lon": -96.20, "max_lat": 33.30}

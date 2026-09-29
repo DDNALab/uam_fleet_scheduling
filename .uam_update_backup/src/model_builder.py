@@ -38,11 +38,7 @@ from .config import (
 def build_aircraft_block(scenario):
     aircraft = {}
     for a in scenario.aircraft:
-        duration = getattr(scenario, "bin_size", BIN_SIZE)
-        origin = getattr(scenario, "horizon_start", HORIZON_START)
-        if (a.arrival_time - origin) % duration:
-            raise ValueError("Aircraft arrival is not on its scenario's time grid")
-        period = (a.arrival_time - origin) // duration + 1
+        period = (a.arrival_time - HORIZON_START) // BIN_SIZE + 1
         aircraft[a.id] = {
             "arrival_period": int(period),
             "initial_soc": float(a.initial_soc),
@@ -63,21 +59,11 @@ def calculate_fares():
     return fares
 
 
-def build_model_input(reduced_scenarios, *, overrides=None):
+def build_model_input(reduced_scenarios):
     if not reduced_scenarios:
         raise ValueError("At least one reduced scenario is required")
 
-    first = reduced_scenarios[0]
-    bin_size = getattr(first, "bin_size", BIN_SIZE)
-    origin = getattr(first, "horizon_start", HORIZON_START)
-    periods = len(first.common_factor)
-    if not periods or 30 % bin_size:
-        raise ValueError("Nonempty horizon and bin dividing 30-minute LoS required")
-    for s in reduced_scenarios:
-        if (len(s.common_factor) != periods
-                or getattr(s, "bin_size", BIN_SIZE) != bin_size
-                or getattr(s, "horizon_start", HORIZON_START) != origin):
-            raise ValueError("Mixed horizons or bin sizes in reduced scenarios")
+    periods = (HORIZON_END - HORIZON_START) // BIN_SIZE
     bookings = dict(reduced_scenarios[0].advance_bookings)
     for s in reduced_scenarios[1:]:
         if s.advance_bookings != bookings:
@@ -90,19 +76,17 @@ def build_model_input(reduced_scenarios, *, overrides=None):
             "peak_multiplier": M_PEAK,
             "shoulder_multiplier": M_SHOULDER,
             "off_multiplier": M_OFF,
-            "bin_size": bin_size,
-            "los_periods": 30 // bin_size,
+            "bin_size": BIN_SIZE,
+            "los_periods": LOS_PERIODS,
             "destination_fares": calculate_fares(),
             "horizon": {
-                "start": origin,
-                "end": origin + periods * bin_size,
-                "bin_size": bin_size,
+                "start": HORIZON_START,
+                "end": HORIZON_END,
+                "bin_size": BIN_SIZE,
             },
-            "battery_capacity": getattr(first, "battery_capacity", BATTERY_CAPACITY),
-            "charging_rate": getattr(first, "charging_rate", CHARGING_RATE),
-            "soc_min": getattr(first, "soc_required", SOC_REQUIRED),
-            "require_positive_incoming_duration": False,
-            "hourly_takeoff_limit": None,
+            "battery_capacity": BATTERY_CAPACITY,
+            "charging_rate": CHARGING_RATE,
+            "soc_min": SOC_REQUIRED,
             "evtol_capacity": EVTOL_CAPACITY,
             "initial_fleet_max": INITIAL_FLEET_MAX,
             "charging_facilities": M_FACILITIES,
@@ -137,24 +121,4 @@ def build_model_input(reduced_scenarios, *, overrides=None):
             "common_factor": s.common_factor,
         }
 
-    if overrides:
-        # Nested costs/CVaR may be overridden without resetting unrelated fields.
-        for key, value in overrides.items():
-            if key in ("costs", "cvar", "horizon"):
-                model["parameters"][key].update(value)
-            elif key in model["parameters"]:
-                model["parameters"][key] = value
-            else:
-                raise KeyError(f"Unknown model parameter override: {key}")
-        p = model["parameters"]
-        if p["periods"] != periods or p["bin_size"] != bin_size:
-            raise ValueError("Rebin scenarios before changing periods or bin_size")
-        if p["horizon"]["start"] != origin:
-            raise ValueError("Model horizon must match scenario arrival-time origin")
-        if any(getattr(s, "charging_rate", CHARGING_RATE) != p["charging_rate"]
-               or getattr(s, "battery_capacity", BATTERY_CAPACITY) != p["battery_capacity"]
-               or getattr(s, "soc_required", SOC_REQUIRED) != p["soc_min"]
-               for s in reduced_scenarios):
-            raise ValueError("Scenario energy parameters differ from model overrides; "
-                             "regenerate/reduce scenarios with consistent energy settings")
     return model

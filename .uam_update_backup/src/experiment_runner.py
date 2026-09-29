@@ -76,20 +76,6 @@ def run_experiment(seed=RANDOM_SEED, solve=True, solver="auto", gap=0.05, time_l
 
     print("\n[4] Building optimization input...")
     model_input = build_model_input(reduced)
-    from .diagnostics.demand_design import booking_capacity_preflight
-    p = model_input["parameters"]
-    preflight = booking_capacity_preflight(
-        model_input["advance_bookings"],
-        destinations=p["destination_fares"], n_periods=p["periods"],
-        los_periods=p["los_periods"], seats_per_flight=p["evtol_capacity"],
-        max_departures_per_period=p["max_departures"],
-    )
-    print("Exact nominal booking preflight:", preflight)
-    if preflight["status"] == "Infeasible":
-        raise ValueError("Advance bookings cannot be nominally protected "
-                         "by the first-stage takeoff constraints")
-    if preflight["status"] == "Unknown":
-        print("WARNING: booking preflight inconclusive; full model must be solved")
 
     if solve:
         print("\n[5] Building projected stochastic MILP...")

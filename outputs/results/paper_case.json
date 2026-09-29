@@ -1,0 +1,47 @@
+{
+  "study": "paper_14h_not_paired_grid",
+  "seed": 60,
+  "physical": {
+    "bin_size": 15,
+    "periods": 56,
+    "horizon_start": 480,
+    "horizon_end": 1320,
+    "los_periods": 2,
+    "charging_rate": 120.0,
+    "charging_facilities": 35,
+    "hourly_takeoff_limit": 68,
+    "max_departures": 17,
+    "require_positive_incoming_duration": true
+  },
+  "booking_share": 0.4,
+  "booking_preflight": {
+    "status": "Feasible",
+    "nominal_flights_certificate": 362,
+    "message": "Exact constructive certificate: protect bookings in their own service periods (not necessarily minimum flights)"
+  },
+  "no_soc_coupling": false,
+  "raw": 20,
+  "retained": 3,
+  "initial_fleet_max_assumed": 12,
+  "initial_fleet_cost_assumed": 60.0,
+  "duration_sets_per_scenario": {
+    "3": [
+      1,
+      2
+    ],
+    "12": [
+      1,
+      2
+    ],
+    "17": [
+      1,
+      2
+    ]
+  },
+  "projected": {
+    "variables": 65394,
+    "integers": 17538,
+    "constraints": 11474,
+    "build_seconds": 0.7769924000022002
+  }
+}

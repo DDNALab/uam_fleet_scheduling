@@ -1,0 +1,25 @@
+{
+  "modified": [
+    "src/stochastic_model.py",
+    "src/detailed_reference_model.py",
+    "src/config.py",
+    "src/scenario_generator.py",
+    "src/scenario_reduction.py",
+    "src/model_builder.py",
+    "src/policy_benchmarks.py",
+    "src/diagnostics/oos_evaluate.py",
+    "src/solution_export.py",
+    "src/experiment_runner.py",
+    "src/diagnostics/demand_design.py",
+    "src/diagnostics/scale_instances.py",
+    "src/diagnostics/run_validation.ps1"
+  ],
+  "new": [
+    "src/group_flow_model.py",
+    "src/diagnostics/compare_formulations.py",
+    "src/diagnostics/charging_resolution.py",
+    "src/diagnostics/paper_case.py",
+    "src/tests/validate_revision.py",
+    "src/tests/test_revision_alignment.py"
+  ]
+}

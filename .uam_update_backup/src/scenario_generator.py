@@ -27,9 +27,6 @@ from .config import (
     AIRCRAFT_PASSENGER_RATIO,
     ADVANCE_BOOKING_FRACTION,
     EVTOL_CAPACITY,
-    BATTERY_CAPACITY,
-    CHARGING_RATE,
-    SOC_REQUIRED,
 )
 
 
@@ -48,13 +45,6 @@ class Scenario:
     on_demand_demand: dict
     aircraft: list
     common_factor: np.ndarray
-    # Physical-time and charging metadata travel with a scenario through
-    # reduction, model building, and independent OOS evaluation.
-    bin_size: int = BIN_SIZE
-    horizon_start: int = HORIZON_START
-    battery_capacity: float = BATTERY_CAPACITY
-    charging_rate: float = CHARGING_RATE
-    soc_required: float = SOC_REQUIRED
 
     @property
     def passenger_demand(self):
@@ -120,28 +110,23 @@ def generate_on_demand_demand(
     return demand
 
 
-def conditional_soc_mean(stress_ratio, common_factor, *, stress_beta=None,
-                         common_beta=None, base_mean=None):
-    """Conditional SoC mean; explicit overrides avoid stale imported constants."""
+def conditional_soc_mean(stress_ratio, common_factor):
+    """Mean of the bounded conditional arrival-SoC distribution, in percent."""
     return (
-        (SOC_BASE_MEAN if base_mean is None else float(base_mean))
-        - (SOC_STRESS_BETA if stress_beta is None else float(stress_beta)) * float(stress_ratio)
-        - (SOC_COMMON_FACTOR_BETA if common_beta is None else float(common_beta)) * float(common_factor)
+        SOC_BASE_MEAN
+        - SOC_STRESS_BETA * float(stress_ratio)
+        - SOC_COMMON_FACTOR_BETA * float(common_factor)
     )
 
 
-def sample_arrival_soc(stress_ratio, common_factor, *, stress_beta=None,
-                       common_beta=None, base_mean=None, soc_std=None):
-    """Bounded conditional SoC; beta=0, beta_g=0 is the no-coupling baseline."""
-    mean = conditional_soc_mean(stress_ratio, common_factor,
-                                stress_beta=stress_beta, common_beta=common_beta,
-                                base_mean=base_mean)
-    std = SOC_STD if soc_std is None else float(soc_std)
-    if std <= 0:
+def sample_arrival_soc(stress_ratio, common_factor):
+    """Draw arrival SoC from the truncated-normal model used in the manuscript."""
+    mean = conditional_soc_mean(stress_ratio, common_factor)
+    if SOC_STD <= 0:
         return float(np.clip(mean, ARRIVAL_SOC_MIN, ARRIVAL_SOC_MAX))
-    a = (ARRIVAL_SOC_MIN - mean) / std
-    b = (ARRIVAL_SOC_MAX - mean) / std
-    return float(truncnorm.rvs(a, b, loc=mean, scale=std))
+    a = (ARRIVAL_SOC_MIN - mean) / SOC_STD
+    b = (ARRIVAL_SOC_MAX - mean) / SOC_STD
+    return float(truncnorm.rvs(a, b, loc=mean, scale=SOC_STD))
 
 
 def _total_demand_by_period(advance_bookings, on_demand_demand, n_periods):
@@ -161,8 +146,7 @@ def _total_demand_by_period(advance_bookings, on_demand_demand, n_periods):
 
 def generate_aircraft(expected_total_passengers, common_factor, total_demand_by_period,
                       beta=0.35, *, aircraft_passenger_ratio=None,
-                      horizon_start=HORIZON_START, bin_size=BIN_SIZE,
-                      stress_beta=None, common_beta=None, base_mean=None, soc_std=None):
+                      horizon_start=HORIZON_START):
     """Generate arrival counts first, then condition each arriving aircraft's SoC on stress."""
     periods = len(common_factor)
     # Arrival supply already grows with total passengers: do not multiply the
@@ -187,11 +171,8 @@ def generate_aircraft(expected_total_passengers, common_factor, total_demand_by_
             aircraft.append(
                 Aircraft(
                     id=aircraft_id,
-                    arrival_time=horizon_start + period * bin_size,
-                    initial_soc=sample_arrival_soc(
-                        stress_ratio, common_factor[period],
-                        stress_beta=stress_beta, common_beta=common_beta,
-                        base_mean=base_mean, soc_std=soc_std),
+                    arrival_time=horizon_start + period * BIN_SIZE,
+                    initial_soc=sample_arrival_soc(stress_ratio, common_factor[period]),
                 )
             )
             aircraft_id += 1
@@ -205,15 +186,9 @@ def generate_scenarios(
     seed=RANDOM_SEED,
     booking_fraction=ADVANCE_BOOKING_FRACTION,
     *, aircraft_passenger_ratio=None, horizon_start=HORIZON_START,
-    bin_size=BIN_SIZE, stress_beta=None, common_beta=None, base_mean=None,
-    soc_std=None, demand_beta=0.35, aircraft_beta=0.35,
-    battery_capacity=BATTERY_CAPACITY, charging_rate=CHARGING_RATE,
-    required_soc=SOC_REQUIRED,
 ):
     """Generate scenarios sharing known bookings but differing in Stage-2 uncertainty."""
     np.random.seed(seed)
-    if bin_size <= 0 or 60 % bin_size or 30 % bin_size:
-        raise ValueError("bin_size must divide both 60-minute hours and 30-minute LoS")
     if not 0 <= booking_fraction <= 1:
         raise ValueError("booking_fraction must be within [0, 1]")
     time_profile = np.asarray(time_profile, dtype=float)
@@ -229,16 +204,13 @@ def generate_scenarios(
     for s in range(n_scenarios):
         common_factor = generate_common_factor(n_periods)
         on_demand = generate_on_demand_demand(
-            expected_demand, time_profile, common_factor, booking_fraction,
-            beta=demand_beta,
+            expected_demand, time_profile, common_factor, booking_fraction
         )
         total_by_period = _total_demand_by_period(bookings, on_demand, n_periods)
         aircraft = generate_aircraft(
             sum(expected_demand.values()), common_factor, total_by_period,
             aircraft_passenger_ratio=aircraft_passenger_ratio,
-            horizon_start=horizon_start, bin_size=bin_size, beta=aircraft_beta,
-            stress_beta=stress_beta, common_beta=common_beta,
-            base_mean=base_mean, soc_std=soc_std,
+            horizon_start=horizon_start,
         )
         scenarios.append(
             Scenario(
@@ -248,9 +220,6 @@ def generate_scenarios(
                 on_demand_demand=on_demand,
                 aircraft=aircraft,
                 common_factor=common_factor,
-                bin_size=bin_size, horizon_start=horizon_start,
-                battery_capacity=battery_capacity, charging_rate=charging_rate,
-                soc_required=required_soc,
             )
         )
     return scenarios

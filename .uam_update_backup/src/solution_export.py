@@ -200,48 +200,6 @@ def export_solution(model_data, out_dir="outputs/results/solution_dump"):
                     _val(v["unserved_on_demand"][sid, r, d]),
                 ])
 
-    # Extra paper-required tensors: first-stage booking certificate and
-    # second-stage duration-start margins and class-specific service flows.
-    written["booking_certificate"] = _write_csv(
-        out / "booking_certificate.csv",
-        ["request_period", "destination", "planned_departure_period", "protected_seats"],
-        [[r, d, k, _val(value)] for (r,d,k), value in
-         sorted(v["protected_bookings"].items()) if _val(value) > 1e-7])
-    written["duration_start"] = _write_csv(
-        out / "duration_start.csv",
-        ["scenario", "duration_periods", "start_period", "w"],
-        [[sid,h,t,_val(value)] for (sid,h,t),value in v["w"].items()
-         if _val(value) > 1e-7])
-    passenger_rows = []
-    for cls, key in (("booked", "booked_passengers"),
-                     ("on_demand", "on_demand_passengers")):
-        for (sid,r,d,k),var in v[key].items():
-            if _val(var) > 1e-7:
-                passenger_rows.append([sid,cls,r,d,k,_val(var)])
-    written["passenger_flows"] = _write_csv(
-        out / "passenger_flows.csv",
-        ["scenario", "class", "request_period", "destination",
-         "departure_period", "served"], passenger_rows)
-    inventory_rows = []
-    for sid, sc in scenarios.items():
-        arrivals = {}
-        for aircraft in sc["aircraft"].values():
-            t = int(aircraft["arrival_period"])
-            arrivals[t] = arrivals.get(t, 0) + 1
-        x0 = _val(v["initial_fleet"])
-        cumulative_arrivals = cumulative_departures = 0.0
-        for k in periods:
-            cumulative_arrivals += arrivals.get(k, 0)
-            pre = x0 + cumulative_arrivals - cumulative_departures
-            cumulative_departures += sum(_val(v["flights"][sid,d,k])
-                                         for d in destinations)
-            post = x0 + cumulative_arrivals - cumulative_departures
-            inventory_rows.append([sid,k,pre,post])
-    written["ground_inventory"] = _write_csv(
-        out / "ground_inventory.csv",
-        ["scenario", "period", "arrival_before_departure_inventory",
-         "post_departure_inventory"], inventory_rows)
-
     written["charging_flow"] = _write_csv(
         out / "charging_flow.csv",
         ["scenario", "group", "arrival_period", "duration", "energy_kwh", "start", "chi"],

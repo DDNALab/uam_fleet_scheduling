@@ -66,7 +66,7 @@ def expected_demand_from_geodata(*, scope, passengers):
     return expected, profile
 
 
-def time_profile_for_horizon(horizon_minutes, *, start_minutes=None, bin_size=None):
+def time_profile_for_horizon(horizon_minutes, *, start_minutes=None):
     """Build a case-specific, properly normalized 15-minute demand profile."""
     import numpy as np
     from src import config
@@ -74,17 +74,13 @@ def time_profile_for_horizon(horizon_minutes, *, start_minutes=None, bin_size=No
 
     if start_minutes is None:
         start_minutes = config.HORIZON_START
-    if bin_size is None:
-        bin_size = config.BIN_SIZE
-    if bin_size <= 0 or horizon_minutes % bin_size:
-        raise ValueError("bin_size must exactly divide horizon_minutes")
     hours = passenger_time_profile(
         start_minutes=start_minutes, end_minutes=start_minutes + int(horizon_minutes),
-        bin_minutes=bin_size,
+        bin_minutes=config.BIN_SIZE,
     )
     weights = hours["weight"].to_numpy(dtype=float)
-    expected_bins = int(horizon_minutes) // bin_size
-    if (horizon_minutes <= 0 or horizon_minutes % bin_size
+    expected_bins = int(horizon_minutes) // config.BIN_SIZE
+    if (horizon_minutes <= 0 or horizon_minutes % config.BIN_SIZE
             or len(weights) != expected_bins
             or not np.isclose(weights.sum(), 1.0, atol=1e-12)):
         raise ValueError("invalid case-specific passenger time profile")
@@ -93,8 +89,7 @@ def time_profile_for_horizon(horizon_minutes, *, start_minutes=None, bin_size=No
 
 def booking_capacity_preflight(bookings, *, destinations, n_periods,
                                los_periods, seats_per_flight,
-                               max_departures_per_period, time_limit=30,
-                                hourly_takeoff_limit=None, bin_size_minutes=None):
+                               max_departures_per_period, time_limit=30):
     """Check EXACT first-stage nominal booking feasibility using a small MILP.
 
     Enforces the two booking-protection families and the shared per-period
@@ -115,9 +110,6 @@ def booking_capacity_preflight(bookings, *, destinations, n_periods,
         raise ValueError("periods, seats, and departure capacity must be positive")
     if los_periods < 0:
         raise ValueError("los_periods must be nonnegative")
-    if hourly_takeoff_limit is not None and (bin_size_minutes is None
-            or 60 % bin_size_minutes):
-        raise ValueError("hourly booking check needs bin dividing 60")
     dest_set = set(destinations)
     if any(d not in dest_set or r < 1 or r > n_periods for (r, d) in bookings):
         raise ValueError("booking lies outside destinations or the case horizon")
@@ -142,16 +134,7 @@ def booking_capacity_preflight(bookings, *, destinations, n_periods,
         sum(v for (r, _d), v in direct_flights.items() if r == period)
         for period in range(1, n_periods + 1)
     )
-    hourly_ok = True
-    if hourly_takeoff_limit is not None:
-        bins = 60 // bin_size_minutes
-        hourly_ok = all(
-            sum(v for (r, d),v in direct_flights.items()
-                if block <= r < min(n_periods+1,block+bins))
-            <= math.floor(hourly_takeoff_limit *
-                min(bins,n_periods-block+1)/bins)
-            for block in range(1,n_periods+1,bins))
-    if peak_flights <= max_departures_per_period and hourly_ok:
+    if peak_flights <= max_departures_per_period:
         return {
             "status": "Feasible",
             "nominal_flights_certificate": sum(direct_flights.values()),
@@ -170,9 +153,7 @@ def booking_capacity_preflight(bookings, *, destinations, n_periods,
     count = len(n_keys) + len(q_keys)
     # Row blocks: exact demand by (r,d); seat capacity by (d,k);
     # shared maximum planned departures by k.
-    hourly_blocks = (list(range(1, n_periods+1, 60//bin_size_minutes))
-                     if hourly_takeoff_limit is not None else [])
-    rows = len(demand) + len(n_keys) + n_periods + len(hourly_blocks)
+    rows = len(demand) + len(n_keys) + n_periods
     A = lil_matrix((rows, count), dtype=float)
     lb = np.full(rows, -np.inf)
     ub = np.zeros(rows)
@@ -186,17 +167,7 @@ def booking_capacity_preflight(bookings, *, destinations, n_periods,
     for (d, k), col in n_id.items():
         A[seat_rows[d, k], col] = -seats_per_flight
         A[len(demand) + len(n_keys) + k - 1, col] = 1
-        if hourly_blocks:
-            bins = 60 // bin_size_minutes
-            for block_index,start in enumerate(hourly_blocks):
-                if start <= k < start+bins:
-                    A[len(demand)+len(n_keys)+n_periods+block_index,col] = 1
-                    break
-    ub[len(demand) + len(n_keys):len(demand)+len(n_keys)+n_periods] = max_departures_per_period
-    for block_index,start in enumerate(hourly_blocks):
-        bins = 60 // bin_size_minutes
-        ub[len(demand)+len(n_keys)+n_periods+block_index] = math.floor(
-            hourly_takeoff_limit*min(bins,n_periods-start+1)/bins)
+    ub[len(demand) + len(n_keys):] = max_departures_per_period
 
     objective = np.zeros(count)
     objective[:len(n_keys)] = 1.0

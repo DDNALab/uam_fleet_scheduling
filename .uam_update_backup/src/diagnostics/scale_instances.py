@@ -33,7 +33,6 @@ from src.scenario_generator import generate_advance_bookings, generate_scenarios
 from src.scenario_reduction import reduce_scenarios
 from src.model_builder import build_model_input
 from src.stochastic_model import build_stochastic_model, add_constraints_and_objective, solve_model
-from src.group_flow_model import build_group_flow_model
 from src.diagnostics.fleet_sensitivity import check_rows_and_integrality, check_inventory
 
 
@@ -48,8 +47,6 @@ FIELDS = [
     "booking_precheck_nominal_flights", "booking_precheck_seconds", "booking_precheck_message",
     "variables", "integer_variables", "constraints", "generation_seconds",
     "reduction_seconds", "build_seconds", "solve_seconds", "status", "gap", "objective",
-    "group_variables", "group_integer_variables", "group_constraints",
-    "group_solve_seconds", "group_status", "group_gap", "group_objective",
     "initial_fleet_allocated", "max_constraint_violation", "max_integrality_error",
     "max_bound_violation", "inventory_passed", "error",
 ]
@@ -142,8 +139,6 @@ def _args():
                     default=[(20., 30, 3), (40., 60, 5), (80., 100, 10)])
     ap.add_argument("--seeds", nargs="+", type=int, default=[60, 61])
     ap.add_argument("--booking-share", type=float, default=config.ADVANCE_BOOKING_FRACTION)
-    ap.add_argument("--with-group-flow", action="store_true",
-                    help="Build/solve group-flow on EXACT same input for paired comparison")
     ap.add_argument("--aircraft-ratio", type=float, default=config.AIRCRAFT_PASSENGER_RATIO,
                     help="Expected incoming aircraft per expected passenger (already "
                          "scales with TOTAL demand; do not multiply twice)")
@@ -296,13 +291,6 @@ def main():
                     row["integer_variables"] = sum(
                         v.cat == pulp.LpInteger for v in model.variables())
                     row["constraints"] = len(model.constraints)
-                    group_data = None
-                    if args.with_group_flow:
-                        group_data = build_group_flow_model(mi)
-                        row["group_variables"] = len(group_data["model"].variables())
-                        row["group_integer_variables"] = sum(
-                            v.cat == pulp.LpInteger for v in group_data["model"].variables())
-                        row["group_constraints"] = len(group_data["model"].constraints)
                     if args.no_solve:
                         row["status"] = "BuiltOnly"
                     else:
@@ -329,16 +317,6 @@ def main():
                             row["error"] = (
                                 "No certified target-gap solution; do not interpret "
                                 "decision metrics")
-                    if group_data is not None and not args.no_solve:
-                        gstart = time.perf_counter()
-                        gres = solve_model(
-                            group_data["model"], solver=args.solver,
-                            gap_rel=args.gap, time_limit=args.time_limit,
-                            verbose=args.verbose)
-                        row["group_solve_seconds"] = time.perf_counter() - gstart
-                        row["group_status"] = gres["status"]
-                        row["group_gap"] = gres.get("solver_reported_gap")
-                        row["group_objective"] = gres.get("objective")
                     print("  ", row["status"], "seed", seed,
                           "vars", row["variables"],
                           "integer", row["integer_variables"],

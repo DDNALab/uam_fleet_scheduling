@@ -37,16 +37,6 @@ def build_detailed_model(model_input):
     for t in T:
         model += b[t] <= p['charging_facilities'], f'RefReserveLimit_{t}'
         model += pulp.lpSum(n[d,t] for d in D) <= p['max_departures'], f'RefPlanCap_{t}'
-    hourly_cap = p.get('hourly_takeoff_limit')
-    if hourly_cap is not None:
-        bins = 60 // p['bin_size']
-        if bins * p['bin_size'] != 60:
-            raise ValueError('hourly cap needs period dividing 60')
-        for block,start in enumerate(range(1,p['periods']+1,bins)):
-            block_periods = [t for t in T if start <= t < start+bins]
-            cap = int(hourly_cap) if len(block_periods)==bins else math.floor(
-                hourly_cap*len(block_periods)/bins)
-            model += pulp.lpSum(n[d,t] for d in D for t in block_periods) <= cap, f'RefHourlyPlan_{block}'
     for r in T:
         for d in D:
             model += (pulp.lpSum(q[r,d,k] for k in _window(r,p['periods'],p['los_periods']))
@@ -69,8 +59,6 @@ def build_detailed_model(model_input):
         for tag,j in incoming:
             info = s['aircraft'][j]
             durations[j] = charging_periods_required(info['initial_soc'],p)
-            if durations[j] == 0 and p.get('require_positive_incoming_duration', False):
-                raise ValueError('Incoming zero-duration aircraft violates manuscript A4')
             feasible[j] = [t for t in T if info['arrival_period'] <= t and t+durations[j] <= p['periods']]
         xs = {(j,t):pulp.LpVariable(f'RefCharge_s{sid}_j{j}_t{t}',lowBound=0,upBound=1,cat='Binary')
               for _,j in incoming for t in feasible[j]}
@@ -105,13 +93,6 @@ def build_detailed_model(model_input):
             model += pulp.lpSum(occupying) <= b[t]+em[t], f'RefChargingCap_s{sid}_t{t}'
             model += em[t] <= p['charging_facilities']-b[t], f'RefEmergencyCap_s{sid}_t{t}'
             model += pulp.lpSum(zs[a,d,t] for a in all_a for d in D) <= p['max_departures'], f'RefTakeoff_s{sid}_t{t}'
-        if hourly_cap is not None:
-            bins = 60 // p['bin_size']
-            for block,start in enumerate(range(1,p['periods']+1,bins)):
-                block_periods = [t for t in T if start <= t < start+bins]
-                cap = int(hourly_cap) if len(block_periods)==bins else math.floor(
-                    hourly_cap*len(block_periods)/bins)
-                model += pulp.lpSum(zs[a,d,t] for a in all_a for d in D for t in block_periods) <= cap, f'RefHourlyFlights_s{sid}_{block}'
         for d in D:
             for k in T:
                 model += pulp.lpSum(zs[a,d,k] for a in all_a) == n[d,k]+plus[d,k]-minus[d,k], f'RefReconcile_s{sid}_d{D.index(d)}_k{k}'
