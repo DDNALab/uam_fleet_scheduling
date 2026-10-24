@@ -44,34 +44,21 @@ flowchart LR
 ```text
 coord-schedule-uam/
 ├── README.md                        # This file
+├── pyproject.toml                   # Packaging, dependencies, tooling
+├── requirements.txt                 # Runtime dependencies
+├── run_experiment.py                # Source-checkout launcher
+├── run_tests.py                     # Test launcher
+├── input/                           # ACS JSON and TIGER/Line tract files
+│   ├── README.md                    # Data dictionary and provenance notes
+│   └── raw/
 ├── literature/                      # Source papers
-└── Code/
-    ├── Price_EvtolPass_Sto.ipynb    # Exploratory notebook
-    ├── run_experiment.py            # Source-checkout launcher
-    ├── run_tests.py                 # Test launcher
-    ├── pyproject.toml
-    ├── requirements.txt
-    ├── data/
-    │   ├── raw/                     # ACS JSON and TIGER/Line tract files
-    │   └── README.md                # Data dictionary and provenance notes
-    ├── docs/
-    │   └── MODEL_NOTES.md           # Scientific validation priorities
-    ├── outputs/
-    │   ├── figures/                 # Generated interactive HTML plots
-    │   └── results/                 # Run summaries and solution dumps
-    ├── src/coord_schedule_uam/
-    │   ├── config.py                # Parameters and repository paths
-    │   ├── uam_data_pipeline.py     # Census, geospatial, gravity demand
-    │   ├── demand_model.py          # Gravity model helpers (unused)
-    │   ├── scenario_generator.py    # Stochastic demand and arrival scenarios
-    │   ├── scenario_reduction.py    # Backward reduction
-    │   ├── model_builder.py         # Solver-ready scenario structures
-    │   ├── stochastic_model.py      # Two-stage MILP, CVaR, solver selection
-    │   ├── aggregated_model.py      # Duration-aggregated cumulative-flow reformulation
-    │   ├── solution_export.py       # Objective breakdown and variable dump
-    │   ├── visualization.py         # Plotly and Folium outputs
-    │   └── experiment_runner.py     # End-to-end orchestration
-    └── tests/                       # Fast unit and configuration tests
+├── output/                          # Generated figures and results (ignored by Git)
+│   ├── figures/
+│   └── results/
+├── docs/
+│   └── MODEL_NOTES.md               # Scientific validation priorities
+├── src/                              # Flat modules (see the table above)
+└── tests/                           # Fast unit and configuration tests
 ```
 
 Generated outputs are ignored by Git. They can be recreated from the
@@ -83,12 +70,12 @@ documented workflow.
 
 ## Installation
 
-`Code/pyproject.toml` declares `requires-python = ">=3.10"`. The validated
+`pyproject.toml` declares `requires-python = ">=3.10"`. The validated
 working environment is **Python 3.8.5** under Anaconda, which runs the pipeline
 despite the declared floor — adjust the requirement or the interpreter so the two
 agree before packaging.
 
-Core dependencies are in `Code/requirements.txt`:
+Core dependencies are in `requirements.txt`:
 
 ```text
 folium, geopandas, highspy, matplotlib, numpy,
@@ -99,7 +86,7 @@ pandas, plotly, pulp, scipy, shapely
 is open source and has no model-size cap. `gurobipy` is **optional** — add it only
 with an unrestricted license (see [Solvers](#solvers)).
 
-From the `Code/` directory:
+From the repository root:
 
 ```bash
 python -m venv .venv
@@ -132,8 +119,8 @@ python -m pip install -e ".[dev]"
 
 ### Directly from a source checkout
 
-The launcher lives in `Code/` and makes `src/` importable without an editable
-install. From `Code/`, run:
+The launcher at the repository root makes `src/` importable without an editable
+install. From the repository root, run:
 
 ```bash
 python run_experiment.py
@@ -160,8 +147,11 @@ Full option list:
 --formulation {indexed,aggregated}
 ```
 
-Do not launch files inside `src/coord_schedule_uam/` directly. They are package
-modules and use relative imports such as `from .config import ...`.
+The modules under `src/` are plain top-level modules, not a package, so each
+one imports its neighbours by bare name (`from config import ...`). Two entry
+points therefore both work: the launcher above, which puts `src/` on
+`sys.path`, and direct execution such as `python src/selfcheck.py`, where the
+script directory is already on the path.
 
 ### Switching formulations
 
@@ -180,10 +170,10 @@ cross-validated.
 
 ### After installing the package
 
-The same CLI is available as a module:
+The same CLI is available as a console script:
 
 ```bash
-python -m coord_schedule_uam --seed 60
+coord-schedule-uam --seed 60
 ```
 
 ## Solvers
@@ -304,18 +294,21 @@ matching `OBJECTIVE (solver)` confirms the breakdown accounts for every term.
 Call it directly from other code:
 
 ```python
-from coord_schedule_uam.solution_export import print_solution_report
+from solution_export import print_solution_report
 print_solution_report(model_data, objective=obj, solver="HIGHS", status="Optimal")
 ```
 
+(`src/` must be on `sys.path`, as it is when the call is made from the
+launcher or from a script inside `src/`.)
+
 ### Files
 
-- `outputs/results/run_summary.json`: seed, scenario counts, solver status, and
+- `output/results/run_summary.json`: seed, scenario counts, solver status, and
   objective value.
-- `outputs/results/solution_dump/`: per-variable CSVs (activation, charging,
+- `output/results/solution_dump/`: per-variable CSVs (activation, charging,
   departures, passengers, unserved, adjustments) plus `objective_breakdown.csv`.
-- `outputs/figures/1_scenario_arrivals.html`: reduced arrival profiles.
-- `outputs/figures/4_reduced_scenario_analysis.html`: four-panel comparison of
+- `output/figures/1_scenario_arrivals.html`: reduced arrival profiles.
+- `output/figures/4_reduced_scenario_analysis.html`: four-panel comparison of
   the original and reduced scenario sets.
 
 A CSV that is locked by another program (typically open in Excel) produces a
@@ -346,8 +339,7 @@ true optimum:
 
 ## Configuration
 
-Experiment parameters are centralized in
-`src/coord_schedule_uam/config.py`, including:
+Experiment parameters are centralized in `src/config.py`, including:
 
 - time-of-use electricity prices;
 - battery, charging, and aircraft capacity;
@@ -362,24 +354,25 @@ works from any current working directory after installation.
 
 ## Testing
 
-From `Code/`:
+From the repository root:
 
 ```bash
 python run_tests.py
 python -m compileall -q src
 ```
 
-The test launcher in `Code/` adds `src/` to Python's import path automatically,
+`run_tests.py` adds `src/` to Python's import path automatically,
 so an editable package installation is not required. The current tests cover
-bundled-data paths, horizon configuration, time-of-use pricing, and scenario
-probability preservation. Add regression tests for model outputs — in particular
-that demand keys span exactly `1..n_periods` — as the formulation stabilizes.
+bundled-data paths, horizon configuration, time-of-use pricing, scenario
+reduction probability mass, and the effective scenario count. Add regression
+tests for model outputs — in particular that demand keys span exactly
+`1..n_periods` — as the formulation stabilizes.
 
 ## Data and reproducibility
 
 The workflow reads a local 2022 ACS JSON snapshot and the Texas 2022
 TIGER/Line census tract shapefile. It does not require a Census API key. See
-`data/README.md` for details.
+`input/README.md` for details.
 
 Randomness is seeded by the experiment runner. Solver versions and operating
 systems can still produce small numerical differences, so record the Python

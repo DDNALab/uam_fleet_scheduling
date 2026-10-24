@@ -17,10 +17,15 @@ venv/
 Thumbs.db
 
 # Generated results (retain the directory structure)
-outputs/figures/*
-!outputs/figures/.gitkeep
-outputs/results/*
-!outputs/results/.gitkeep
+output/figures/*
+!output/figures/.gitkeep
+output/results/*
+!output/results/.gitkeep
+
+# Local tool state and logs
+.claude/
+dsh-acl-recovery/
+*.log
 
 # Archives and solver artifacts
 *.rar

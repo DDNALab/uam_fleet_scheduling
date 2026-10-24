@@ -1,29 +1,17 @@
 """
-uam_data_pipeline.py
-====================
+Deterministic spatial demand inputs for the coordinated UAM model.
 
-Deterministic UAM demand preparation pipeline.
+Builds what is known before uncertainty: the vertiport network, ACS population
+per census tract, the population assigned to each vertiport, gravity-based
+origin-destination demand from the DFW hub, and a within-day demand profile.
 
-Creates the information available BEFORE uncertainty:
+Paths come from ``config``: the ACS summary JSON, the census tract shapefile
+clipped to ``BBOX``, and the raw vertiport coordinates. All three are required;
+there is no synthetic fallback if a file is missing.
 
-1. Vertiport network
-2. ACS population allocation
-3. UAM market potential
-4. Gravity-based OD demand
-5. Expected passenger demand profile
-6. Destination distances and fares
-
-
-Used as input for:
-- Stage 1 commitment decisions:
-      n[d,t]
-      b[t]
-
-Not responsible for:
-- scenarios
-- stochastic demand
-- aircraft uncertainty
-- SoC uncertainty
+The output feeds the first-stage commitment decisions ``n[d, t]`` and ``b[t]``.
+Scenarios and stochastic demand, aircraft and SoC uncertainty live in
+:mod:`scenario_generator`.
 """
 
 
@@ -34,9 +22,7 @@ import geopandas as gpd
 import numpy as np
 import pandas as pd
 
-from shapely.geometry import Polygon
-
-from .config import (
+from config import (
     ACS_JSON_PATH,
     SHAPEFILE_PATH,
     BBOX,
@@ -53,7 +39,7 @@ from .config import (
 
 
 # ============================================================
-# 1. Vertiports
+# 1. Vertiport network
 # ============================================================
 
 def load_vertiports():
@@ -166,7 +152,7 @@ def load_population():
 
 
 # ============================================================
-# 4. Merge population
+# 4. Population merge
 # ============================================================
 
 def merge_population(
@@ -181,6 +167,7 @@ def merge_population(
     )
 
 
+    # Tracts without an ACS population record are dropped.
     return result.dropna(
         subset=["population"]
     )
@@ -188,7 +175,7 @@ def merge_population(
 
 
 # ============================================================
-# 5. Assign census tracts to nearest vertiport
+# 5. Nearest-vertiport assignment
 # ============================================================
 
 def assign_nearest_vertiport(
@@ -196,6 +183,7 @@ def assign_nearest_vertiport(
         vertiports
 ):
 
+    # Project both layers to EPSG:3857 so ``distance`` is in metres.
     verts = (
         vertiports
         .to_crs(3857)
@@ -238,7 +226,7 @@ def assign_nearest_vertiport(
 
 
 # ============================================================
-# 6. Calculate U_j market potential
+# 6. Market potential
 # ============================================================
 
 def calculate_market_potential(
@@ -246,10 +234,8 @@ def calculate_market_potential(
 ):
 
     """
-    PDF:
-
-    U_j = sum_i a P_i
-
+    Market potential per vertiport, ``U_j = sum_i a P_i``: the UAM adoption
+    share times the population of each tract assigned to the vertiport.
     """
 
     tracts["uam_population"] = (
@@ -321,12 +307,8 @@ def gravity_demand(
 ):
 
     """
-
-    Computes:
-
-    G_DFW,j =
-    U_DFW U_j / d^gamma
-
+    Gravity score ``U_hub * U_j / d**GAMMA`` for every non-hub destination,
+    scaled so the flows sum to ``TOTAL_PASSENGER_TRIPS``.
     """
 
     hub_value = market[HUB_NAME]
@@ -340,6 +322,7 @@ def gravity_demand(
     flows=[]
 
 
+    # Only hub-origin flows are modelled, so the hub is never a destination.
     for destination, Uj in market.items():
 
 
@@ -417,6 +400,7 @@ def gaussian(x,mu,sigma):
 
 def passenger_time_profile():
 
+    # Two Gaussian peaks at 08:00 and 16:00 (sigma 60 and 80 min) on a 0.05 floor.
     periods = np.arange(
         HORIZON_START,
         HORIZON_END,
@@ -461,8 +445,10 @@ def passenger_time_profile():
 
 
 # ============================================================
-# 9. Complete pipeline
+# 9. Pipeline
 # ============================================================
+
+# Chains the steps above; the returned dict holds every intermediate table.
 
 def build_uam_data():
 

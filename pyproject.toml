@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "coord-schedule-uam"
-version = "0.1.0"
+version = "0.2.0"
 description = "Risk-aware stochastic demand and coordinated charging/scheduling for urban air mobility."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -28,10 +28,27 @@ dev = [
 ]
 
 [project.scripts]
-coord-schedule-uam = "coord_schedule_uam.experiment_runner:main"
+coord-schedule-uam = "experiment_runner:main"
 
-[tool.setuptools.packages.find]
-where = ["src"]
+# The sources in src/ are plain top-level modules, not an importable package.
+[tool.setuptools]
+package-dir = {"" = "src"}
+py-modules = [
+  "aggregated_model",
+  "config",
+  "demand_model",
+  "economics",
+  "experiment_runner",
+  "feasibility",
+  "model_builder",
+  "scenario_generator",
+  "scenario_reduction",
+  "selfcheck",
+  "solution_export",
+  "stochastic_model",
+  "uam_data_pipeline",
+  "visualization",
+]
 
 [tool.pytest.ini_options]
 addopts = "-q"
@@ -40,4 +57,3 @@ testpaths = ["tests"]
 [tool.ruff]
 line-length = 100
 target-version = "py310"
-

@@ -5,7 +5,7 @@ import sys
 if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from coord_schedule_uam import config
+import config
 
 
 def test_bundled_input_paths_exist():

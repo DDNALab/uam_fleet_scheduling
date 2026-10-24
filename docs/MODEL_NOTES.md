@@ -1,6 +1,6 @@
 # Model notes and validation priorities
 
-The package now implements the aircraft-indexed two-stage commitment--recourse
+The code now implements the aircraft-indexed two-stage commitment--recourse
 formulation from the paper: shared departure and charging commitments are
 linked to scenario-specific charging, flights, passenger flows, additions,
 cancellations, emergency capacity, and CVaR service loss.
