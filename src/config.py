@@ -23,9 +23,9 @@ from pathlib import Path
 # Test case: 09:00-10:00, i.e. four 15-minute periods.
 # ``PAPER_BASE`` (end of file) restores the published 14-hour horizon.
 
-HORIZON_START = 9 * 60          # minutes after midnight -> 09:00
+HORIZON_START = 8 * 60          # minutes after midnight -> 08:00
 
-HORIZON_END = 10 * 60           # minutes after midnight -> 10:00
+HORIZON_END = 11 * 60           # minutes after midnight -> 12:00
 
 #: Period length in minutes. Sensitivity: 5, 10, 15.
 BIN_SIZE = 15
@@ -119,7 +119,7 @@ LOS_PERIODS = los_periods()
 # Expected passengers over the horizon, split into advance bookings (share
 # ``phi_B``) and stochastic on-demand requests. Test case uses 20.
 
-TOTAL_PASSENGER_TRIPS = 20         # expected passengers over the horizon
+TOTAL_PASSENGER_TRIPS = 90         # expected passengers over the horizon
 
 ADVANCE_BOOKING_SHARE = 0.40        # phi_B
 
@@ -141,7 +141,7 @@ EXPECTED_INCOMING_AIRCRAFT = AIRCRAFT_PASSENGER_RATIO * TOTAL_PASSENGER_TRIPS
 
 # EXPERIMENTAL: no calibrated value; the published base case uses 40.
 # 5 keeps the test case supply-scarce so the CVaR terms actually bind.
-MAX_INITIAL_FLEET = 5
+MAX_INITIAL_FLEET = 6
 
 #: Fleet-cap sensitivity grid.
 MAX_INITIAL_FLEET_RANGE = (10, 20, 40, 60)

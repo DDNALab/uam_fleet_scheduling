@@ -929,28 +929,33 @@ def main():
 
         return
 
-    run_experiment(
-        seed=args.seed,
-        solve=not args.skip_solve,
-        solver=args.solver,
-        formulation=args.formulation,
-        theta=args.theta,
-        alpha=args.alpha,
-        booking_share=args.booking_share,
-        raw_scenarios=args.raw_scenarios,
-        optimization_scenarios=args.optimization_scenarios,
-        out_of_sample_scenarios=args.out_of_sample_scenarios,
-        export=args.export,
-        n_destinations=args.n_destinations,
-        n_periods=args.n_periods,
-        max_initial_fleet=args.max_initial_fleet,
-        charging_facilities=args.charging_facilities,
-        max_departures=args.max_departures,
-        initial_aircraft_cost=args.initial_aircraft_cost,
-        cost_profile=args.cost_profile,
-        time_limit=args.time_limit,
-        gap=args.gap,
-    )
+    try:
+        run_experiment(
+            seed=args.seed,
+            solve=not args.skip_solve,
+            solver=args.solver,
+            formulation=args.formulation,
+            theta=args.theta,
+            alpha=args.alpha,
+            booking_share=args.booking_share,
+            raw_scenarios=args.raw_scenarios,
+            optimization_scenarios=args.optimization_scenarios,
+            out_of_sample_scenarios=args.out_of_sample_scenarios,
+            export=args.export,
+            n_destinations=args.n_destinations,
+            n_periods=args.n_periods,
+            max_initial_fleet=args.max_initial_fleet,
+            charging_facilities=args.charging_facilities,
+            max_departures=args.max_departures,
+            initial_aircraft_cost=args.initial_aircraft_cost,
+            cost_profile=args.cost_profile,
+            time_limit=args.time_limit,
+            gap=args.gap,
+        )
+    except RuntimeError as error:
+        # Most often an unavailable solver; a traceback buries the actionable part.
+        print("\n[error] %s" % error)
+        raise SystemExit(2)
 
 
 if __name__ == "__main__":

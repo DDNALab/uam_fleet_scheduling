@@ -43,7 +43,6 @@ py-modules = [
   "model_builder",
   "scenario_generator",
   "scenario_reduction",
-  "selfcheck",
   "solution_export",
   "stochastic_model",
   "uam_data_pipeline",

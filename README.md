@@ -1,454 +1,101 @@
 # Coordinated eVTOL Scheduling under Demand Uncertainty
 
-This repository contains a reproducible research workflow for urban air
-mobility demand estimation, stochastic scenario generation and reduction, and
-risk-aware eVTOL charging and passenger scheduling in the Dallas-Fort Worth
-region.
-
-The project combines geospatial Census inputs, a gravity-based demand model,
-non-homogeneous Poisson arrival scenarios, backward scenario reduction, and a
-mixed-integer linear program with a CVaR risk term.
-
-> **Research status:** This is an academic model under active validation. The
-> included data and parameters support computational experiments; they should
-> not be interpreted as an operational deployment plan.
-
-## Workflow
-
-```mermaid
-flowchart LR
-    A[ACS population + Census tracts] --> B[Geospatial allocation]
-    B --> C[Gravity demand model]
-    C --> D[Passenger and eVTOL arrivals]
-    D --> E[Joint scenario generation]
-    E --> F[Backward scenario reduction]
-    F --> G[Conditional state-of-charge sampling]
-    G --> H[Stochastic MILP + CVaR]
-    H --> I[Results and interactive figures]
-```
-
-| Stage | Module |
-|---|---|
-| Geospatial allocation, gravity demand | `uam_data_pipeline.py` |
-| Scenario generation | `scenario_generator.py` |
-| Scenario reduction | `scenario_reduction.py` |
-| Solver-ready structures | `model_builder.py` |
-| Aircraft-indexed MILP (PDF §4.2) | `stochastic_model.py` |
-| Aggregated MILP (PDF §4.3) | `aggregated_model.py` |
-| Objective breakdown, variable dump | `solution_export.py` |
-| Figures | `visualization.py` |
-| Orchestration | `experiment_runner.py` |
+Research code for urban air mobility in the Dallas–Fort Worth region: Census-based
+demand, correlated arrival scenarios, scenario reduction, and a two-stage
+risk-averse (CVaR) MILP for charging, fleet activation and passenger service.
 
 ## Repository structure
 
 ```text
-coord-schedule-uam/
-├── README.md                        # This file
-├── pyproject.toml                   # Packaging, dependencies, tooling
-├── requirements.txt                 # Runtime dependencies
-├── run_experiment.py                # Source-checkout launcher
-├── run_tests.py                     # Test launcher
-├── input/                           # ACS JSON and TIGER/Line tract files
-│   ├── README.md                    # Data dictionary and provenance notes
-│   └── raw/
-├── literature/                      # Source papers
-├── output/                          # Generated figures and results (ignored by Git)
-│   ├── figures/
-│   └── results/
-├── docs/
-│   └── MODEL_NOTES.md               # Scientific validation priorities
-├── src/                              # Flat modules (see the table above)
-└── tests/                           # Fast unit and configuration tests
+coord_schedule_UAM/
+├── run_experiment.py          # main entry point
+├── run_tests.py               # test suite
+├── requirements.txt           # Python dependencies
+├── input/                     # ACS 2022 JSON + Texas census tracts
+├── output/                    # generated results (ignored by Git)
+├── docs/MODEL_NOTES.md        # assumptions and open validation work
+├── tests/                     # fast unit tests
+└── src/                       # all code: plain modules, not a package
+    ├── experiment_runner.py   # command line interface, runs the pipeline
+    ├── uam_data_pipeline.py   # spatial demand: population → vertiports → OD flows
+    ├── demand_model.py        # legacy temporal demand variant (unused)
+    ├── economics.py           # fares, energy prices, charging duration
+    ├── scenario_generator.py  # passenger and aircraft arrival scenarios
+    ├── scenario_reduction.py  # tail-preserving scenario reduction
+    ├── model_builder.py       # solver-ready input
+    ├── stochastic_model.py    # aircraft-indexed MILP (paper §4.2)
+    ├── aggregated_model.py    # duration-aggregated formulation (paper §4.3)
+    ├── feasibility.py         # first-stage feasibility screening
+    ├── solution_export.py     # objective breakdown and CSV export
+    └── visualization.py       # HTML figures
 ```
-
-Generated outputs are ignored by Git. They can be recreated from the
-documented workflow.
-
-> **Note:** `demand_model.py` is currently dead code — nothing imports it, and it
-> references config names that no longer exist (`TOTAL_TRIPS_TARGET`,
-> `N_EVTOL`). The live demand path is `uam_data_pipeline.py`.
 
 ## Installation
 
-`pyproject.toml` declares `requires-python = ">=3.10"`. The validated
-working environment is **Python 3.8.5** under Anaconda, which runs the pipeline
-despite the declared floor — adjust the requirement or the interpreter so the two
-agree before packaging.
+Python 3.10 or newer. From the repository root in PowerShell:
 
-Core dependencies are in `requirements.txt`:
-
-```text
-folium, geopandas, highspy, matplotlib, numpy,
-pandas, plotly, pulp, scipy, shapely
-```
-
-`highspy` provides the HiGHS MILP backend and is the recommended solver, since it
-is open source and has no model-size cap. `gurobipy` is **optional** — add it only
-with an unrestricted license (see [Solvers](#solvers)).
-
-From the repository root:
-
-```bash
+```powershell
 python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
 ```
 
-Activate the environment:
+`highspy` provides the solver and needs no licence.
 
-```bash
-# Windows PowerShell
-.venv\Scripts\Activate.ps1
+## How to run
 
-# macOS or Linux
-source .venv/bin/activate
-```
+Run every command from the repository root with the environment activated.
 
-Install the project:
+### Step 1 — run the model
 
-```bash
-python -m pip install --upgrade pip
-python -m pip install -e .
-```
-
-For tests and linting tools:
-
-```bash
-python -m pip install -e ".[dev]"
-```
-
-## Running the workflow
-
-### Directly from a source checkout
-
-The launcher at the repository root makes `src/` importable without an editable
-install. From the repository root, run:
-
-```bash
+```powershell
 python run_experiment.py
 ```
 
-Build the pipeline and solve, choose a reproducible seed, and pick a solver:
+Defaults: aggregated formulation, automatic solver, seed 60. It takes about a
+minute and prints the objective breakdown, passenger service and CVaR. 
 
-```bash
-python run_experiment.py --seed 60 --solver highs
-```
+`--skip-solve` builds the model and checks the data pipeline without solving.
 
-Smoke check that builds the optimization input without solving the MILP:
+### Step 2 — pick the formulation
 
-```bash
-python run_experiment.py --skip-solve
-```
+The aggregated formulation is the default because it is much smaller. The indexed
+one is the exact reference from paper §4.2, and is only practical on small
+instances.
 
-Full option list:
+| Formulation | Use it for | Command |
+|---|---|---|
+| `aggregated` | normal runs and experiments  | `python run_experiment.py` |
+| `indexed` | checking the reference model  | `python run_experiment.py --formulation indexed` |
 
-```text
---seed SEED
---skip-solve
---solver {auto,gurobi,highs,cbc}
---formulation {indexed,aggregated}
-```
 
-The modules under `src/` are plain top-level modules, not a package, so each
-one imports its neighbours by bare name (`from config import ...`). Two entry
-points therefore both work: the launcher above, which puts `src/` on
-`sys.path`, and direct execution such as `python src/selfcheck.py`, where the
-script directory is already on the path.
 
-### Switching formulations
+### Step 3 — pick the solver
 
-The default model is the aircraft-indexed formulation (`--formulation indexed`,
-PDF Section 4.2). To use the smaller duration-aggregated cumulative-flow
-reformulation (`--formulation aggregated`, PDF Section 4.3):
+`--solver auto` (the default) tries Gurobi, then HiGHS, then CBC, so this step is
+optional. HiGHS is the practical choice; CBC is markedly slower and returns worse
+solutions on the default instance.
 
-```bash
-python run_experiment.py --formulation aggregated --solver highs
-```
+| Solver | Needs | Command |
+|---|---|---|
+| HiGHS | comes with `highspy`, no licence | `python run_experiment.py --solver highs` |
+| CBC | comes with `pulp` | `python run_experiment.py --solver cbc` |
+| Gurobi | `gurobipy` and a licence | `python run_experiment.py --solver gurobi` |
 
-The aggregated model is exact under the paper's pooling assumptions, but its
-implementation is new. On the same instance it currently gives a different
-objective than the indexed model, so treat it as experimental until the two are
-cross-validated.
+Combine both choices in any order, separated by spaces — `--solver` can be added
+to any command above.
 
-### After installing the package
+`python run_experiment.py --help` lists every flag, including `--seed`,
+`--export`, `--gap` and `--time-limit`.
 
-The same CLI is available as a console script:
-
-```bash
-coord-schedule-uam --seed 60
-```
-
-## Solvers
-
-The MILP is solved through PuLP. Selection walks a fixed preference order and
-uses the first solver that is both installed and able to hold the model:
-
-```
-SOLVER_PREFERENCE = ("GUROBI", "HIGHS", "CBC")
-```
-
-`--solver` overrides the order:
-
-```bash
-python run_experiment.py --solver highs
-python run_experiment.py --solver cbc
-python run_experiment.py --solver auto    # default
-```
-
-A solver that is skipped is reported with the reason, so a fallback is never
-silent:
-
-```
-[info] skipping GUROBI -- size-limited license: model has 4104 vars /
-       8000 constraints, trial cap is 2000 each
-[info] solving with HIGHS
-```
-
-### Gurobi's size-limited license
-
-The default Gurobi trial license caps a model at **2000 variables and 2000
-constraints**. The stochastic extensive form is far larger than that, so a naive
-`pulp.GUROBI()` call fails deep inside gurobipy:
-
-```
-gurobipy.GurobiError: Model too large for size-limited license;
-visit https://gurobi.com/unrestricted for more information
-```
-
-`solve_model` therefore projects the model size onto the cap *before* building
-the Gurobi solver and rejects it if exceeded. To actually run Gurobi you need one
-of:
-
-- an unrestricted Gurobi license (commercial or academic), or
-- **HiGHS**, which is open source, unbounded, and already satisfies the
-  `highspy` requirement — this is the practical choice.
-
-**Version note.** A `gurobipy` wheel must match the installed Gurobi runtime. A
-mismatch shows up as `ImportError: DLL load failed while importing gurobipy` —
-for example `gurobipy` 11.x against a Gurobi 12 installation, which needs
-`gurobi110.dll` while only `gurobi120.dll` exists. Install the matching wheel:
-
-```bash
-python -m pip install --upgrade "gurobipy==12.0.0"
-```
-
-To use a specific HiGHS executable rather than `highspy`, set `HIGHS_PATH`:
-
-```powershell
-$env:HIGHS_PATH = "C:\path\to\highs.exe"
-python run_experiment.py --solver highs
-```
 
 ## Outputs
 
-### Console report
+- Console: objective breakdown, served/unserved passengers, CVaR.
+- `output/results/run_summary.json` — seed, scenarios, solver status, objective.
+- With `--export`: `output/results/solution_dump/*.csv`.
 
-At the end of a solve the runner prints an objective breakdown, passenger
-service totals and the CVaR block directly to stdout — no files required:
+## Data
 
-```text
-================================================================
-OBJECTIVE BREAKDOWN
-================================================================
-  Expected revenue                         631.25
-  Expected charging cost                   -10.73
-  Expected unserved penalty                -26.67
-  Expected added-departure cost             -9.73
-  Expected cancelled-departure cost         -0.00
-  Expected emergency-capacity cost          -2.00
-                                     ------------
-  EXPECTED PROFIT                          582.12
-  First-stage commitment cost               -0.00
-  First-stage reservation cost              -5.00
-  CVaR risk penalty                        -44.00
-                                     ------------
-  OBJECTIVE (model)                        533.12
-  OBJECTIVE (solver)                       533.12
-
-================================================================
-PASSENGER SERVICE
-================================================================
-  Total demand (sum over scenarios)            31
-  Served                                    29.00
-  Unserved                                   2.00
-  Service rate                              93.5%
-  Probability-weighted unserved              0.27
-
-  per scenario:
-    scn    prob     demand   served   unserved profit
-    3      0.433    10       10.00    0.00     584.60
-    21     0.433    13       13.00    0.00     715.50
-    29     0.133    8        6.00     2.00     140.58
-
-================================================================
-CVaR
-================================================================
-  L_s per scenario                   {3: 0.0, 21: 0.0, 29: 2.0}
-  VaR at alpha=0.90                        2.0000
-  CVaR                                     2.0000
-  lambda/(1-alpha) multiplier               220.0
-  CVaR penalty                            44.0000
-```
-
-`OBJECTIVE (model)` is recomputed from the solved variable values, so it
-matching `OBJECTIVE (solver)` confirms the breakdown accounts for every term.
-
-Call it directly from other code:
-
-```python
-from solution_export import print_solution_report
-print_solution_report(model_data, objective=obj, solver="HIGHS", status="Optimal")
-```
-
-(`src/` must be on `sys.path`, as it is when the call is made from the
-launcher or from a script inside `src/`.)
-
-### Files
-
-- `output/results/run_summary.json`: seed, scenario counts, solver status, and
-  objective value.
-- `output/results/solution_dump/`: per-variable CSVs (activation, charging,
-  departures, passengers, unserved, adjustments) plus `objective_breakdown.csv`.
-- `output/figures/1_scenario_arrivals.html`: reduced arrival profiles.
-- `output/figures/4_reduced_scenario_analysis.html`: four-panel comparison of
-  the original and reduced scenario sets.
-
-A CSV that is locked by another program (typically open in Excel) produces a
-warning and is skipped rather than aborting the run — the console report still
-carries every number.
-
-Generated outputs are intentionally ignored by Git so that commits remain
-small and reviewable.
-
-### Reading solver logs
-
-HiGHS logs the objective in its **internal minimization form**, so the sign is
-flipped relative to the model:
-
-```text
-Primal bound      -533.121319638     # true value is +533.121319638
-Dual bound        -533.288150751     # true value is +533.288150751
-```
-
-This is a convention of the MPS interface, not an error. PuLP reports it in the
-model's own sense, and the two agree — verified against a model with a known
-optimum. Gurobi and CBC log the objective directly.
-
-Always check `proven_optimal` before interpreting an objective. A run that stops
-on the time limit or gap tolerance still reports `status: Optimal` through PuLP's
-status mapping, so a large residual gap is the signal that the value is not a
-true optimum:
-
-## Configuration
-
-Experiment parameters are centralized in `src/config.py`, including:
-
-- time-of-use electricity prices;
-- battery, charging, and aircraft capacity;
-- experiment horizon and time-bin size;
-- fleet and passenger counts;
-- scenario generation and reduction sizes;
-- CVaR-related model inputs;
-- study-area bounds and vertiport coordinates.
-
-All file paths are derived from the repository root. The workflow therefore
-works from any current working directory after installation.
-
-## Testing
-
-From the repository root:
-
-```bash
-python run_tests.py
-python -m compileall -q src
-```
-
-`run_tests.py` adds `src/` to Python's import path automatically,
-so an editable package installation is not required. The current tests cover
-bundled-data paths, horizon configuration, time-of-use pricing, scenario
-reduction probability mass, and the effective scenario count. Add regression
-tests for model outputs — in particular that demand keys span exactly
-`1..n_periods` — as the formulation stabilizes.
-
-## Data and reproducibility
-
-The workflow reads a local 2022 ACS JSON snapshot and the Texas 2022
-TIGER/Line census tract shapefile. It does not require a Census API key. See
-`input/README.md` for details.
-
-Randomness is seeded by the experiment runner. Solver versions and operating
-systems can still produce small numerical differences, so record the Python
-environment and solver version when reporting results.
-
-## Known validation work
-
-The repository layout and execution environment are productionized, but the
-research formulation still needs targeted mathematical validation. See
-`docs/MODEL_NOTES.md` before using results in a publication.
-
-### A negative objective is a demand-service signal
-
-A negative objective usually means **unserved passengers dominate**, not that the
-model is wrong. With `c^un = 100` per unserved passenger and a CVaR multiplier of
-`lambda / (1 - alpha) = 22 / 0.10 = 220`, a handful of unserved passengers
-outweighs the revenue from a small demand instance. The console report makes the
-cause visible: compare `Expected unserved penalty` against `Expected revenue`.
-
-Do **not** fix this by lowering `UNSERVED_PASSENGER_COST` — that hides the
-structural shortfall rather than resolving it.
-
-### Demand service: fleet size is the lever
-
-The binding constraint is the **cumulative number of seats ready before each
-passenger's deadline**, not charging speed. Measured levers, 5 seeds, `LoS = 2`:
-
-| `AIRCRAFT_PASSENGER_RATIO` | mean objective | mean unserved | fully served |
-|---|---|---|---|
-| 0.30 | 77.0 | 1.960 | 1/5 |
-| 0.60 | 275.5 | 0.613 | 3/5 |
-| 0.90 | 350.2 | 0.640 | 3/5 |
-| 1.20 | 459.1 | 0.067 | 4/5 |
-| 1.80 | — | 0.000 | 5/5 |
-
-Raising `CHARGING_RATE` (120 → 250 kW) and lowering `SOC_REQUIRED` (70 → 55)
-both leave usable-aircraft unchanged — charging is **not** binding. Note also
-that `soc_min` drives the charging *cost* term, so lowering it makes charging
-cheaper without improving service.
-
-### Period indexing
-
-Demand periods are **1-based** and must stay aligned with both the model's
-period set, `range(1, n_periods + 1)`, and the 1-based `arrival_period` computed
-in `model_builder.py`. `generate_passenger_demand` previously used
-`for t in range(periods)`, which keyed demand at 0…7 and silently dropped the
-period-0 passengers while inventing an empty period 8. If you change the
-horizon, re-check that demand keys span exactly `1..n_periods`.
-
-### Horizon units
-
-`HORIZON_START` and `HORIZON_END` are currently in **minutes** (`480` and `720`,
-i.e. 08:00–12:00), so `N_PERIODS = (HORIZON_END - HORIZON_START) // BIN_SIZE`.
-
-Earlier revisions stored these in **seconds** while dividing by a `BIN_SIZE`
-expressed in minutes. That mix produced 15-*second* periods and a horizon one
-eighth of the intended length, so every timing result depended on which unit the
-author had in mind. Two guards:
-
-1. `N_PERIODS` must equal `(HORIZON_END - HORIZON_START) // BIN_SIZE` with both
-   operands in the same unit.
-2. The config comment must match the arithmetic — `720` is 12:00, and the inline
-   comment currently reads 10:00.
-
-The config, the demand time profile in `uam_data_pipeline.py` and
-`scenario_generator.py` must all agree before any timing result is trusted.
-Note these constants are imported **by value**, so a programmatic override must
-patch the name in each importing module, not just `config`.
-
-### Scenario counts
-
-With only 3 retained scenarios, the 0.90 CVaR tail is a **single scenario**, so
-`VaR = CVaR` and the risk term reflects one outcome. Increase
-`TARGET_SCENARIOS` before drawing conclusions about tail risk.
-
-## License
-
-No open-source license has been selected. Add an appropriate `LICENSE` file
-before distributing this repository publicly.
+The 2022 ACS snapshot and the Texas census tract shapefile in `input/` are all the
+workflow needs; no Census API key is required. See `input/README.md`.

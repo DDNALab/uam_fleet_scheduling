@@ -1148,6 +1148,22 @@ def size_advisory(size):
     )
 
 
+def _gurobi_reason():
+    """Explain why Gurobi cannot be used, distinguishing the failure modes."""
+    try:
+        import gurobipy  # noqa: F401
+    except ImportError as error:
+        if "DLL load failed" in str(error):
+            return (
+                "gurobipy is installed but the Gurobi runtime it was built for "
+                "is missing or a different version (DLL load failed); install "
+                "the matching wheel, e.g. pip install \"gurobipy==12.0.0\", or "
+                "use --solver highs"
+            )
+        return "gurobipy is not installed (pip install gurobipy), or use --solver highs"
+    return "no Gurobi licence found, or use --solver highs"
+
+
 def _make_solver(
     solver_name,
     model,
@@ -1184,14 +1200,15 @@ def _make_solver(
         )
 
         if not solver.available():
-            return None, "gurobipy unavailable or not licensed"
+            return None, _gurobi_reason()
 
         size = formulation_size(model)
 
         if size["variables"] > 2000 or size["constraints"] > 2000:
             return None, (
                 "size-limited licence: model has %d variables / %d constraints, "
-                "trial cap is 2000 each" % (size["variables"], size["constraints"])
+                "trial cap is 2000 each; use --solver highs"
+                % (size["variables"], size["constraints"])
             )
 
         if threads:
@@ -1308,11 +1325,16 @@ def solve_model(
 
         skip_reasons.append("%s: %s" % (solver_name, reason))
 
-        print("[info] skipping %s -- %s" % (solver_name, reason))
+        # With an explicit request the caller reports the failure itself, so a
+        # per-solver "skipping" line would only repeat the same text.
+        if requested == "auto":
+            print("[info] skipping %s -- %s" % (solver_name, reason))
 
     if chosen is None:
         raise RuntimeError(
-            "No usable MILP solver found. Tried: %s" % "; ".join(skip_reasons)
+            "No usable MILP solver found. Tried: %s\n"
+            "Pick an installed solver with --solver highs or --solver cbc, or "
+            "leave --solver auto." % "; ".join(skip_reasons)
         )
 
     solver_name, solver_instance = chosen
