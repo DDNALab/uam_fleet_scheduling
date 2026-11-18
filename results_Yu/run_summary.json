@@ -1,0 +1,115 @@
+{
+  "seed": 60,
+  "formulation": "aggregated",
+  "generated_scenarios": 30,
+  "reduced_scenarios": 4,
+  "reduction": {
+    "retained": 4,
+    "effective_scenarios": 2.0930232558139537,
+    "max_probability": 0.6333333333333333,
+    "tail": 2,
+    "central": 2
+  },
+  "raw_diagnostics": {
+    "scenarios": 30,
+    "ondemand_mean": 53.3,
+    "ondemand_std": 13.94787916972804,
+    "aircraft_mean": 28.1,
+    "aircraft_std": 8.986471313405872,
+    "soc_mean": 43.061035148392584,
+    "soc_std": 7.5343006327206075,
+    "duration_counts": {
+      "1": 449,
+      "2": 394
+    },
+    "mean_stress": 1.2790334270282187
+  },
+  "booking_feasibility": {
+    "cut_ok": true,
+    "exact_ok": true,
+    "structurally_feasible": true
+  },
+  "parameters": {
+    "booking_share": 0.4,
+    "cvar": {
+      "alpha": 0.9,
+      "weight": 22.0,
+      "weight_booked": 2.0,
+      "weight_ondemand": 1.0
+    },
+    "max_initial_fleet": 6,
+    "charging_facilities": 35,
+    "max_departures": 17,
+    "total_passengers": 90
+  },
+  "status": "GapReached(4.88%)",
+  "proven_optimal": false,
+  "objective": 2414.6198942363126,
+  "mip_gap": 0.04881740783890413,
+  "dual_bound": 2532.4953783891806,
+  "size": {
+    "variables": 2001,
+    "integer_variables": 1306,
+    "binary_variables": 0,
+    "continuous_variables": 695,
+    "constraints": 1124
+  },
+  "scenario_service": [
+    {
+      "scenario": 11,
+      "probability": 0.0333,
+      "booked_demand": 36.0,
+      "booked_served": 36.0,
+      "booked_unserved": 0.0,
+      "ondemand_demand": 80.0,
+      "ondemand_served": 69.0,
+      "ondemand_unserved": 11.0,
+      "demand_total": 116.0,
+      "served_total": 105.0,
+      "unserved_total": 11.0,
+      "served_share": 0.9052
+    },
+    {
+      "scenario": 17,
+      "probability": 0.0667,
+      "booked_demand": 36.0,
+      "booked_served": 36.0,
+      "booked_unserved": 0.0,
+      "ondemand_demand": 40.0,
+      "ondemand_served": 26.0,
+      "ondemand_unserved": 14.0,
+      "demand_total": 76.0,
+      "served_total": 62.0,
+      "unserved_total": 14.0,
+      "served_share": 0.8158
+    },
+    {
+      "scenario": 21,
+      "probability": 0.6333,
+      "booked_demand": 36.0,
+      "booked_served": 36.0,
+      "booked_unserved": 0.0,
+      "ondemand_demand": 49.0,
+      "ondemand_served": 49.0,
+      "ondemand_unserved": 0.0,
+      "demand_total": 85.0,
+      "served_total": 85.0,
+      "unserved_total": 0.0,
+      "served_share": 1.0
+    },
+    {
+      "scenario": 28,
+      "probability": 0.2667,
+      "booked_demand": 36.0,
+      "booked_served": 36.0,
+      "booked_unserved": 0.0,
+      "ondemand_demand": 48.0,
+      "ondemand_served": 48.0,
+      "ondemand_unserved": 0.0,
+      "demand_total": 84.0,
+      "served_total": 84.0,
+      "unserved_total": 0.0,
+      "served_share": 1.0
+    }
+  ]
+}
