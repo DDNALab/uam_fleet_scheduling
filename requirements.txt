@@ -8,4 +8,5 @@ plotly>=5.18
 pulp>=2.8
 scipy>=1.11
 shapely>=2.0
+typing_extensions>=4.0  # highspy imports it on Python 3.10 without declaring it
 
